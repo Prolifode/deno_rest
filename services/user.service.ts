@@ -3,7 +3,7 @@ import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import log from "../middlewares/logger.middleware.ts";
 import { User, UserSchema } from "../models/user.model.ts";
 import { ObjectId, Status } from "../deps.ts";
-import {
+import type {
   CreateUserStructure,
   UpdatedStructure,
   UpdateUserStructure,

@@ -1,9 +1,9 @@
 import { Status } from "../deps.ts";
 import HashHelper from "../helpers/hash.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
-import { TokenSchema } from "../models/token.model.ts";
+import type { TokenSchema } from "../models/token.model.ts";
 import { User, UserSchema } from "../models/user.model.ts";
-import {
+import type {
   LoginStructure,
   TokenStructure,
   UserStructure,

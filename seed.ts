@@ -4,7 +4,7 @@ import log from "./middlewares/logger.middleware.ts";
 const seedCollections: Array<Record<string, boolean>> = [
   {
     users: true,
-  }
+  },
 ];
 
 class Seed {

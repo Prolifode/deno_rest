@@ -8,7 +8,7 @@ await log.setup({
     functionFmt: new log.handlers.ConsoleHandler("DEBUG", {
       formatter: (logRecord) => {
         let time = new Date().toISOString();
-        let msg = `${time} [${logRecord.levelName}] ${logRecord.msg}`;
+        let msg = `${time} [${logRecord.level}] ${logRecord.msg}`;
 
         logRecord.args.forEach((arg, index) => {
           msg += `, arg${index}: ${arg}`;
@@ -17,6 +17,7 @@ await log.setup({
       },
     }),
   },
+
   loggers: {
     default: {
       level: "DEBUG",

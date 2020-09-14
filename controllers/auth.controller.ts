@@ -1,4 +1,4 @@
-import { RouterContext } from "../deps.ts";
+import type { RouterContext } from "../deps.ts";
 import log from "../middlewares/logger.middleware.ts";
 import AuthService from "../services/auth.service.ts";
 

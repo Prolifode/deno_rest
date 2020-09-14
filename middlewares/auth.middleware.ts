@@ -2,7 +2,7 @@ import { roleRights } from "../config/roles.ts";
 import { Context, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import UserService from "../services/user.service.ts";
-import { UserStructure } from "../types/types.interface.ts";
+import type { UserStructure } from "../types/types.interface.ts";
 import { throwError } from "./errorHandler.middleware.ts";
 
 /**

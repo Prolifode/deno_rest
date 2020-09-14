@@ -1,9 +1,9 @@
 import config from "../config/config.ts";
-import { moment, ObjectId, Payload, Status } from "../deps.ts";
+import { moment, ObjectId, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import { Token, TokenSchema } from "../models/token.model.ts";
-import { TokenStructure } from "../types/types.interface.ts";
+import type { TokenStructure } from "../types/types.interface.ts";
 
 class TokenService {
   /**

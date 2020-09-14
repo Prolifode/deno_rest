@@ -1,4 +1,4 @@
-import { ObjectId } from "../deps.ts";
+import type { ObjectId } from "../deps.ts";
 
 export interface TokenStructure {
   access: { expires: Date; token: string };
