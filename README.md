@@ -28,6 +28,25 @@ This is a Boilerplate project to create Deno RESTful API using oak and deno_mong
  - [x] [god_crypto](https://deno.land/x/god_crypto) - Encrypts passwords in AES to save in database collection.
 
 ## Getting Started
+###Install / Upgrade
+**Using Deno:**
+```
+deno upgrade --version 1.3.3
+```
+
+
+**With Shell:**
+```
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.3.3
+```
+
+
+**With PowerShell:**
+```
+$v="1.3.3"; iwr https://deno.land/x/install/install.ps1 -useb | iex
+```
+
+
 Clone this repository to your local machine
 ```
 git clone https://github.com/vicky-gonsalves/deno_rest.git
