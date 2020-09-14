@@ -14,7 +14,6 @@ export {
 export { config as dotEnv } from "https://deno.land/x/dotenv/mod.ts";
 export * as log from "https://deno.land/std/log/mod.ts";
 export { MongoClient, ObjectId } from "https://deno.land/x/mongo/mod.ts";
-export { readJsonSync } from "https://deno.land/std/fs/mod.ts";
 export { oakCors } from "https://deno.land/x/cors/mod.ts";
 export { validateJwt } from "https://deno.land/x/djwt/validate.ts";
 export {
