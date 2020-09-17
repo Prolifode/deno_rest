@@ -1,14 +1,14 @@
-import { log } from "../deps.ts";
+import { handlers, getLogger, setup } from "../deps.ts";
 import configs from "../config/config.ts";
 
 const { env } = configs;
 
-await log.setup({
+await setup({
   handlers: {
-    functionFmt: new log.handlers.ConsoleHandler("DEBUG", {
+    functionFmt: new handlers.ConsoleHandler("DEBUG", {
       formatter: (logRecord) => {
         let time = new Date().toISOString();
-        let msg = `${time} [${logRecord.levelName}] ${logRecord.msg}`;
+        let msg = `${time} [${logRecord.level}] ${logRecord.msg}`;
 
         logRecord.args.forEach((arg, index) => {
           msg += `, arg${index}: ${arg}`;
@@ -17,6 +17,7 @@ await log.setup({
       },
     }),
   },
+
   loggers: {
     default: {
       level: "DEBUG",
@@ -29,10 +30,10 @@ await log.setup({
   },
 });
 
-let loggerMiddleware = log.getLogger();
+let loggerMiddleware = getLogger();
 
 if (env === "test") {
-  loggerMiddleware = log.getLogger("tests");
+  loggerMiddleware = getLogger("tests");
 }
 
 export default loggerMiddleware;

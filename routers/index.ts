@@ -1,4 +1,4 @@
-import { Application } from "../deps.ts";
+import type { Application } from "../deps.ts";
 import defaultRouter from "./default.router.ts";
 import userRouter from "./user.router.ts";
 import authRouter from "./auth.router.ts";

@@ -1,9 +1,9 @@
 import config from "../config/config.ts";
-import { moment, ObjectId, Payload, Status } from "../deps.ts";
+import { ObjectId, setExpiration, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import { Token, TokenSchema } from "../models/token.model.ts";
-import { TokenStructure } from "../types/types.interface.ts";
+import type { TokenStructure } from "../types/types.interface.ts";
 
 class TokenService {
   /**
@@ -38,32 +38,26 @@ class TokenService {
         type: "NotFound",
       });
     }
-    const accessTokenExpires = moment().add(
-      config.jwtAccessExpiration,
-      "seconds",
-    );
+    const accessTokenExpires = setExpiration(config.jwtAccessExpiration);
     const accessToken = await JwtHelper.getToken(accessTokenExpires, userId);
-
-    const refreshTokenExpires = moment().add(
-      config.jwtRefreshExpiration,
-      "seconds",
-    );
+    const refreshTokenExpires = setExpiration(config.jwtRefreshExpiration);
     const refreshToken = await JwtHelper.getToken(refreshTokenExpires, userId);
+
     await this.saveTokenService({
       token: refreshToken,
       user: userId,
-      expires: new Date(refreshTokenExpires),
+      expires: new Date(refreshTokenExpires * 1000), // milliseconds
       type: "refresh",
       blacklisted: false,
     });
     return {
       access: {
         token: accessToken,
-        expires: accessTokenExpires.toDate(),
+        expires: new Date(accessTokenExpires * 1000), // milliseconds,
       },
       refresh: {
         token: refreshToken,
-        expires: refreshTokenExpires.toDate(),
+        expires: new Date(refreshTokenExpires * 1000), // milliseconds,
       },
     };
   }

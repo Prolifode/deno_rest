@@ -2,9 +2,7 @@ import configs from "../config/config.ts";
 import {
   Jose,
   makeJwt,
-  moment,
   Payload,
-  setExpiration,
   Status,
   validateJwt,
 } from "../deps.ts";
@@ -25,14 +23,14 @@ class JwtHelper {
    * @returns Promise<string> Returns JWT
    */
   public static getToken(
-    expires: Date,
+    expires: number,
     id?: string,
   ): Promise<string> {
     const payload: Payload = {
       iss: "djwt",
-      iat: moment().unix(),
+      iat: Date.now(),
       id,
-      exp: setExpiration(new Date(expires)),
+      exp: expires, // in seconds
     };
     return makeJwt({ header, payload, key: jwtSecret });
   }

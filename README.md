@@ -23,7 +23,6 @@ This is a Boilerplate project to create Deno RESTful API using oak and deno_mong
  - [x] [deno_mongo](https://deno.land/x/mongo) - MongoDB driver for Deno
  - [x] [cors](https://deno.land/x/cors) - Deno.js CORS middleware
  - [x] [djwt](https://deno.land/x/djwt) - To make JSON Web Tokens in deno. Based on JWT and JWS specifications.
- - [x] [deno_moment](https://deno.land/x/deno_moment) - Ported version of moment.js
  - [x] [yup](https://github.com/jquense/yup) - Schema builder for value parsing and validation
  - [x] [god_crypto](https://deno.land/x/god_crypto) - Encrypts passwords in AES to save in database collection.
 

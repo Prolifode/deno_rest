@@ -1,5 +1,5 @@
 import { roles } from "../config/roles.ts";
-import { RouterContext } from "../deps.ts";
+import type { RouterContext } from "../deps.ts";
 import log from "../middlewares/logger.middleware.ts";
 import UserService from "../services/user.service.ts";
 

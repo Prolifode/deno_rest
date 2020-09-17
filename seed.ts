@@ -1,11 +1,10 @@
 import db from "./db/db.ts";
-import { readJsonSync } from "./deps.ts";
 import log from "./middlewares/logger.middleware.ts";
 
 const seedCollections: Array<Record<string, boolean>> = [
   {
     users: true,
-  }
+  },
 ];
 
 class Seed {
@@ -28,7 +27,7 @@ class Seed {
     // deno-lint-ignore no-explicit-any
     let data: any[];
     try {
-      const _data = readJsonSync(`./data/${name}.json`);
+      const _data = JSON.parse(await Deno.readTextFile(`./data/${name}.json`));
       if (_data && Array.isArray(_data)) {
         data = _data;
         try {
