@@ -1,5 +1,5 @@
 import config from "../config/config.ts";
-import { ObjectId, setExpiration, Status } from "../deps.ts";
+import { ObjectId, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import { Token, TokenSchema } from "../models/token.model.ts";
@@ -38,9 +38,9 @@ class TokenService {
         type: "NotFound",
       });
     }
-    const accessTokenExpires = setExpiration(config.jwtAccessExpiration);
+    const accessTokenExpires = config.jwtAccessExpiration;
     const accessToken = await JwtHelper.getToken(accessTokenExpires, userId);
-    const refreshTokenExpires = setExpiration(config.jwtRefreshExpiration);
+    const refreshTokenExpires = config.jwtRefreshExpiration;
     const refreshToken = await JwtHelper.getToken(refreshTokenExpires, userId);
 
     await this.saveTokenService({

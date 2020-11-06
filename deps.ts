@@ -23,14 +23,13 @@ export {
   setup,
 } from "https://deno.land/std/log/mod.ts";
 export { MongoClient, ObjectId } from "https://deno.land/x/mongo/mod.ts";
-export { oakCors } from "https://raw.githubusercontent.com/tajpouria/cors/master/mod.ts"; // Currently using fork version to support deno 1.4.0
-export { validateJwt } from "https://deno.land/x/djwt/validate.ts";
+export { oakCors } from "https://deno.land/x/cors/mod.ts";
 export type {
-  Jose,
+  Header,
   Payload,
-} from "https://deno.land/x/djwt/create.ts";
+} from "https://deno.land/x/djwt/mod.ts";
 export {
-  makeJwt,
-  setExpiration,
-} from "https://deno.land/x/djwt/create.ts";
+  create,
+  verify
+} from "https://deno.land/x/djwt/mod.ts";
 export { yup };
