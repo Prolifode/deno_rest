@@ -1,5 +1,5 @@
 import db from "./db/db.ts";
-import HashHelper from './helpers/hash.helper.ts';
+import HashHelper from "./helpers/hash.helper.ts";
 import log from "./middlewares/logger.middleware.ts";
 
 const seedCollections: Array<Record<string, boolean>> = [
@@ -44,7 +44,7 @@ class Seed {
         }
       }
     } catch (e) {
-      if (e === 'Invalid key length') {
+      if (e === "Invalid key length") {
         log.error(`Please shorten the 'KEY' in your .env`);
       } else {
         log.error(`${name}.json file not found in data dir`);

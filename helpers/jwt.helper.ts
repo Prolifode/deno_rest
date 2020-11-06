@@ -1,5 +1,5 @@
 import configs from "../config/config.ts";
-import { create, Header, Payload, Status, verify, } from "../deps.ts";
+import { create, Header, Payload, Status, verify } from "../deps.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 
 const { jwtSecret } = configs;
