@@ -1,6 +1,6 @@
 // deno-lint-ignore-file
 
-import { RouterContext, helpers, Status } from "../deps.ts";
+import { helpers, RouterContext, Status } from "../deps.ts";
 import { throwError } from "./errorHandler.middleware.ts";
 
 /**

@@ -13,7 +13,7 @@ class AuthController {
     { request, response }: RouterContext,
   ): Promise<void> {
     const body = request.body();
-    let { email, password } = await body.value;
+    const { email, password } = await body.value;
     log.debug("Trying Login user");
     response.body = await AuthService.login({ email, password });
   }
@@ -28,7 +28,7 @@ class AuthController {
     { request, response }: RouterContext,
   ): Promise<void> {
     const body = request.body();
-    let { refreshToken } = await body.value;
+    const { refreshToken } = await body.value;
     log.debug("Getting refresh token");
     response.body = await AuthService.getRefreshToken(refreshToken);
   }

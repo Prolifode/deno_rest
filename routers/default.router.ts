@@ -5,9 +5,9 @@ const router = new Router();
 
 router.get("/(.*)", async (context: Context) => {
   if (configs.env === "production") {
-    let path = context.request.url.pathname.split("/")[1];
+    const path = context.request.url.pathname.split("/")[1];
     let resource = context.request.url.pathname;
-    let options = { root: Deno.cwd() };
+    const options = { root: Deno.cwd() };
     if (path !== "build") {
       resource = "build/index.html";
     }

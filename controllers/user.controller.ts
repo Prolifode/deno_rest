@@ -14,7 +14,7 @@ class UserController {
     { request, response }: RouterContext,
   ): Promise<void> {
     const body = request.body();
-    let {
+    const {
       name,
       email,
       password,
@@ -76,7 +76,7 @@ class UserController {
   ): Promise<void> {
     const { id } = params;
     const body = request.body();
-    let { name, role, isDisabled } = await body.value;
+    const { name, role, isDisabled } = await body.value;
     log.debug("Updating user");
     response.body = await UserService.updateUser(id as string, {
       name,

@@ -1,17 +1,11 @@
 import configs from "../config/config.ts";
-import {
-  Jose,
-  makeJwt,
-  Payload,
-  Status,
-  validateJwt,
-} from "../deps.ts";
+import { create, Header, Payload, Status, verify } from "../deps.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 
 const { jwtSecret } = configs;
 
-const header: Jose = {
-  alg: "HS256",
+const header: Header = {
+  alg: "HS512",
   typ: "JWT",
 };
 
@@ -30,9 +24,10 @@ class JwtHelper {
       iss: "djwt",
       iat: Date.now(),
       id,
-      exp: expires, // in seconds
+      exp: Date.now() / 1000 + expires, // in seconds
     };
-    return makeJwt({ header, payload, key: jwtSecret });
+
+    return create(header, payload, jwtSecret);
   }
 
   /**
@@ -41,20 +36,18 @@ class JwtHelper {
    * @returns Promise<Payload | Error> Returns JWT payload
    */
   public static async getJwtPayload(token: string): Promise<Payload | Error> {
-    const jwtObject = await validateJwt(
-      { jwt: token, key: jwtSecret, algorithm: "HS256" },
-    );
-    if (jwtObject.isValid && jwtObject.payload) {
-      return jwtObject.payload;
+    try {
+      return await verify(token, jwtSecret, "HS512");
+    } catch (e) {
+      return throwError({
+        status: Status.Unauthorized,
+        name: "Unauthorized",
+        path: "access_token",
+        param: "access_token",
+        message: `access_token is expired`,
+        type: "Unauthorized",
+      });
     }
-    return throwError({
-      status: Status.Unauthorized,
-      name: "Unauthorized",
-      path: "access_token",
-      param: "access_token",
-      message: `access_token is expired`,
-      type: "Unauthorized",
-    });
   }
 }
 
