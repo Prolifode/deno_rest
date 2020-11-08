@@ -1,7 +1,7 @@
 import db from "../db/db.ts";
 
-export interface UserSchema {
-  _id: { $oid?: string };
+export interface UserHistorySchema {
+  _id?: { $oid?: string };
   name: string;
   email: string;
   password: string;
@@ -12,4 +12,4 @@ export interface UserSchema {
   updatedAt?: Date;
 }
 
-export const User = db.getDatabase.collection<UserSchema>("users");
+export const UserHistory = db.getDatabase.collection<UserHistorySchema>("users_history");

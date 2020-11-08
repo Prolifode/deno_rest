@@ -2,6 +2,7 @@ import HashHelper from "../helpers/hash.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import log from "../middlewares/logger.middleware.ts";
 import { User, UserSchema } from "../models/user.model.ts";
+import { UserHistory, UserHistorySchema } from "../models/user_history.model.ts";
 import { ObjectId, Status } from "../deps.ts";
 import type {
   CreateUserStructure,
@@ -22,10 +23,17 @@ class UserService {
     const { name, email, password, role, isDisabled } = options;
     const hashedPassword = await HashHelper.encrypt(password);
     const createdAt = new Date();
+
     const user: ObjectId = await User.insertOne(
-      { name, email, password: hashedPassword, role, isDisabled, createdAt },
+      { name, email, password: hashedPassword, role, isDisabled, createdAt, doc_version: 1},
     );
-    if (!user) {
+
+    if(user){
+      const user_history: ObjectId = await UserHistory.insertOne(
+        {_id:user,  name, email, password: hashedPassword, role, isDisabled, createdAt, doc_version: 1},
+      );
+    }
+    else {
       log.error("Could not create user");
       return throwError({
         status: Status.BadRequest,
