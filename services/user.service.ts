@@ -30,7 +30,7 @@ class UserService {
 
     if(user){
       const user_history: ObjectId = await UserHistory.insertOne(
-        {_id:user,  name, email, password: hashedPassword, role, isDisabled, createdAt, doc_version: 1},
+        {id:user,  name, email, password: hashedPassword, role, isDisabled, createdAt, doc_version: 1},
       );
     }
     else {
@@ -69,7 +69,7 @@ class UserService {
         name: "NotFound",
         path: "user",
         param: "user",
-        message: `user not found`,
+        message: `User not found`,
         type: "NotFound",
       });
     }
@@ -120,8 +120,27 @@ class UserService {
    * @returns Promise<number | Error Returns deleted count
    */
   public static async removeUser(id: string): Promise<number | Error> {
+    const user: (UserSchema | null) = await User.findOne({ _id: ObjectId(id) });
+    if (!user) {
+      log.error("User not found");
+      return throwError({
+        status: Status.NotFound,
+        name: "NotFound",
+        path: "user",
+        param: "user",
+        message: `User not found`,
+        type: "NotFound",
+      });
+    }
     const deleteCount: number = await User.deleteOne({ _id: ObjectId(id) });
-    if (!deleteCount) {
+    if (deleteCount) {
+      const {name, email, role, isDisabled, createdAt,  doc_version } = user;
+      const updatedAt = new Date();
+      const user_history: ObjectId = await UserHistory.insertOne(
+        {id:ObjectId(id) , name, email, role, isDisabled, createdAt, updatedAt, doc_version: doc_version + 1},
+      );
+    }
+    else {
       return throwError({
         status: Status.BadRequest,
         name: "BadRequest",
