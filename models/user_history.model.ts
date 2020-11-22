@@ -1,7 +1,7 @@
 import db from "../db/db.ts";
 
 export interface UserHistorySchema {
-  _id?: { $oid?: string };
+  id: { $oid?: string };
   name: string;
   email: string;
   password: string;
