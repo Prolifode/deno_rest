@@ -87,6 +87,20 @@ class UserService {
     id: string,
     options: UpdateUserStructure,
   ): Promise<UpdatedStructure | Error> {
+    const user: (UserSchema | null) = await User.findOne({ _id: ObjectId(id) });
+    if (!user) {
+      log.error("User not found");
+      return throwError({
+        status: Status.NotFound,
+        name: "NotFound",
+        path: "user",
+        param: "user",
+        message: `User not found`,
+        type: "NotFound",
+      });
+    }
+    const { doc_version } = user;
+    const new_doc_version = doc_version + 1
     const { isDisabled, name, role } = options;
     const updatedAt = new Date();
     const result: ({
@@ -99,9 +113,16 @@ class UserService {
         role,
         isDisabled,
         updatedAt,
+        doc_version: new_doc_version
       },
-    });
-    if (!result) {
+    },
+    );
+    if(result){
+      const user_history: ObjectId = await UserHistory.insertOne(
+        {id:ObjectId(id) , name, role, isDisabled, doc_version: new_doc_version},
+      );
+    }
+    else {
       return throwError({
         status: Status.BadRequest,
         name: "BadRequest",
@@ -111,6 +132,7 @@ class UserService {
         type: "BadRequest",
       });
     }
+
     return result;
   }
 
@@ -135,9 +157,10 @@ class UserService {
     const deleteCount: number = await User.deleteOne({ _id: ObjectId(id) });
     if (deleteCount) {
       const {name, email, role, isDisabled, createdAt,  doc_version } = user;
+      const new_doc_version = doc_version + 1
       const updatedAt = new Date();
       const user_history: ObjectId = await UserHistory.insertOne(
-        {id:ObjectId(id) , name, email, role, isDisabled, createdAt, updatedAt, doc_version: doc_version + 1},
+        {id:ObjectId(id) , name, email, role, isDisabled, createdAt, updatedAt, doc_version: new_doc_version},
       );
     }
     else {
