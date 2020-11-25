@@ -10,6 +10,7 @@ export interface UserStructure {
   name: string;
   email: string;
   role: string;
+  isVerified: boolean;
   isDisabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -25,12 +26,24 @@ export interface CreateUserStructure {
   email: string;
   password: string;
   role: string;
+  isVerified: boolean;
   isDisabled: boolean;
 }
+
+export interface SignupUserStructure {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  isVerified: boolean;
+  isDisabled: boolean;
+}
+
 
 export interface UpdateUserStructure {
   name?: string;
   role?: string;
+  isVerified?: boolean;
   isDisabled?: boolean;
 }
 

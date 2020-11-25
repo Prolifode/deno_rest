@@ -27,6 +27,31 @@ export const createUserValidation = {
   }),
 };
 
+
+export const signupUserValidation = {
+  body: yup.object({
+    name: yup
+      .string()
+      .min(1)
+      .max(255)
+      .trim()
+      .required(`name is required`),
+    email: yup
+      .string()
+      .email()
+      .trim()
+      .required(`email is required`),
+    password: yup
+      .string()
+      .required(`password is required`)
+      .min(6)
+      .max(255),
+  }),
+};
+
+
+
+
 export const meValidation = {};
 
 export const getUserValidation = {

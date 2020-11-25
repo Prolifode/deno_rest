@@ -6,12 +6,14 @@ import { UserHistory, UserHistorySchema } from "../models/user_history.model.ts"
 import { ObjectId, Status } from "../deps.ts";
 import type {
   CreateUserStructure,
+  SignupUserStructure,
   UpdatedStructure,
   UpdateUserStructure,
   UserStructure,
 } from "../types/types.interface.ts";
 
 class UserService {
+
   /**
    * Create user Service
    * @param options
@@ -20,17 +22,17 @@ class UserService {
   public static async createUser(
     options: CreateUserStructure,
   ): Promise<ObjectId | Error> {
-    const { name, email, password, role, isDisabled } = options;
+    const { name, email, password, role, isVerified, isDisabled } = options;
     const hashedPassword = await HashHelper.encrypt(password);
     const createdAt = new Date();
 
     const user: ObjectId = await User.insertOne(
-      { name, email, password: hashedPassword, role, isDisabled, createdAt, doc_version: 1},
+      { name, email, password: hashedPassword, role, isVerified, isDisabled, createdAt, __v: 1},
     );
 
     if(user){
       const user_history: ObjectId = await UserHistory.insertOne(
-        {id:user,  name, email, password: hashedPassword, role, isDisabled, createdAt, doc_version: 1},
+        {id:user,  name, email, password: hashedPassword, role, isVerified, isDisabled, createdAt, __v: 1},
       );
     }
     else {
@@ -46,6 +48,45 @@ class UserService {
     }
     return user;
   }
+
+
+/**
+ * Signup user Service
+ * @param name
+ * @param email
+ * @param password
+ * @returns Promise<ObjectId | Error> Returns Mongo Id of user document
+ */
+public static async signupUser(
+  options: SignupUserStructure,
+): Promise<ObjectId | Error> {
+  const { name, email, password, role, isVerified, isDisabled} = options;
+  const hashedPassword = await HashHelper.encrypt(password);
+  const createdAt = new Date();
+
+  const user: ObjectId = await User.insertOne(
+    { name, email, password: hashedPassword, role, isVerified, isDisabled, createdAt, __v: 1},
+  );
+
+  if(user){
+    const user_history: ObjectId = await UserHistory.insertOne(
+      {id:user,  name, email, password: hashedPassword, role, isVerified, isDisabled, createdAt, __v: 1},
+    );
+  }
+  else {
+    log.error("Could not create user");
+    return throwError({
+      status: Status.BadRequest,
+      name: "BadRequest",
+      path: "user",
+      param: "user",
+      message: `Could not create user`,
+      type: "BadRequest",
+    });
+  }
+  return user;
+}
+
 
   /**
    * Get users service
@@ -73,8 +114,8 @@ class UserService {
         type: "NotFound",
       });
     }
-    const { name, email, role, isDisabled, createdAt, updatedAt } = user;
-    return { id, name, email, role, isDisabled, createdAt, updatedAt };
+    const { name, email, role, isDisabled, isVerified, createdAt, updatedAt } = user;
+    return { id, name, email, role, isDisabled, isVerified, createdAt, updatedAt };
   }
 
   /**
@@ -99,9 +140,9 @@ class UserService {
         type: "NotFound",
       });
     }
-    const { doc_version } = user;
-    const new_doc_version = doc_version + 1
-    const { isDisabled, name, role } = options;
+    const { __v } = user;
+    const new___v = __v + 1
+    const { name, role, isVerified, isDisabled } = options;
     const updatedAt = new Date();
     const result: ({
       matchedCount: number;
@@ -111,15 +152,16 @@ class UserService {
       $set: {
         name,
         role,
+        isVerified,
         isDisabled,
         updatedAt,
-        doc_version: new_doc_version
+        __v: new___v
       },
     },
     );
     if(result){
       const user_history: ObjectId = await UserHistory.insertOne(
-        {id:ObjectId(id) , name, role, isDisabled, doc_version: new_doc_version},
+        {id:ObjectId(id) , name, role, isVerified, isDisabled, updatedAt, __v: new___v},
       );
     }
     else {
@@ -156,11 +198,11 @@ class UserService {
     }
     const deleteCount: number = await User.deleteOne({ _id: ObjectId(id) });
     if (deleteCount) {
-      const {name, email, role, isDisabled, createdAt,  doc_version } = user;
-      const new_doc_version = doc_version + 1
+      const {name, email, role, isVerified, isDisabled, createdAt,  __v } = user;
+      const new___v = __v + 1
       const updatedAt = new Date();
       const user_history: ObjectId = await UserHistory.insertOne(
-        {id:ObjectId(id) , name, email, role, isDisabled, createdAt, updatedAt, doc_version: new_doc_version},
+        {id:ObjectId(id) , name, email, role, isVerified, isDisabled, createdAt, updatedAt, __v: new___v},
       );
     }
     else {

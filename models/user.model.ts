@@ -6,10 +6,11 @@ export interface UserSchema {
   email: string;
   password: string;
   role: string;
-  doc_version: number;
+  isVerified : boolean;
   isDisabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  __v: number;
 }
 
 export const User = db.getDatabase.collection<UserSchema>("users");

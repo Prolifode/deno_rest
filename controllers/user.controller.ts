@@ -27,9 +27,39 @@ class UserController {
       email,
       password,
       role: role || roles[0],
+      isVerified: true,
       isDisabled: typeof isDisabled === "boolean" ? isDisabled : false,
     });
   }
+
+
+  /**
+   * Signup User function
+   * @param request
+   * @param response
+   * @returns Promise<void>
+   */
+  public static async signup(
+    { request, response }: RouterContext,
+  ): Promise<void> {
+    const body = request.body();
+    const {
+      name,
+      email,
+      password,
+    } = await body.value;
+    log.debug("Signup user");
+    response.body = await UserService.signupUser({
+      name,
+      email,
+      password,
+      role: roles[0],
+      isVerified: false,
+      isDisabled: true,
+    });
+  }
+
+
 
   /**
    * Get single user function
@@ -76,11 +106,12 @@ class UserController {
   ): Promise<void> {
     const { id } = params;
     const body = request.body();
-    const { name, role, isDisabled } = await body.value;
+    const { name, role, isVerified, isDisabled } = await body.value;
     log.debug("Updating user");
     response.body = await UserService.updateUser(id as string, {
       name,
       role,
+      isVerified,
       isDisabled,
     });
   }
