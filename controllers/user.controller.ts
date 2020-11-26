@@ -27,7 +27,7 @@ class UserController {
       email,
       password,
       role: role || roles[0],
-      isVerified: true,
+      isVerified: false,
       isDisabled: typeof isDisabled === "boolean" ? isDisabled : false,
     });
   }
@@ -55,7 +55,7 @@ class UserController {
       password,
       role: roles[0],
       isVerified: false,
-      isDisabled: true,
+      isDisabled: false,
     });
   }
 
