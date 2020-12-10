@@ -32,7 +32,6 @@ class UserController {
     });
   }
 
-
   /**
    * Signup User function
    * @param request
@@ -58,8 +57,6 @@ class UserController {
       isDisabled: false,
     });
   }
-
-
 
   /**
    * Get single user function

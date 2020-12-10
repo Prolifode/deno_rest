@@ -39,7 +39,6 @@ export interface SignupUserStructure {
   isDisabled: boolean;
 }
 
-
 export interface UpdateUserStructure {
   name?: string;
   role?: string;

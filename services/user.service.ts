@@ -2,7 +2,10 @@ import HashHelper from "../helpers/hash.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import log from "../middlewares/logger.middleware.ts";
 import { User, UserSchema } from "../models/user.model.ts";
-import { UserHistory, UserHistorySchema } from "../models/user_history.model.ts";
+import {
+  UserHistory,
+  UserHistorySchema,
+} from "../models/user_history.model.ts";
 import { ObjectId, Status } from "../deps.ts";
 import type {
   CreateUserStructure,
@@ -13,7 +16,6 @@ import type {
 } from "../types/types.interface.ts";
 
 class UserService {
-
   /**
    * Create user Service
    * @param options
@@ -27,15 +29,33 @@ class UserService {
     const createdAt = new Date();
 
     const user: ObjectId = await User.insertOne(
-      { name, email, password: hashedPassword, role, isVerified, isDisabled, createdAt, __v: 1},
+      {
+        name,
+        email,
+        password: hashedPassword,
+        role,
+        isVerified,
+        isDisabled,
+        createdAt,
+        __v: 1,
+      },
     );
 
-    if(user){
+    if (user) {
       const user_history: ObjectId = await UserHistory.insertOne(
-        {id:user,  name, email, password: hashedPassword, role, isVerified, isDisabled, createdAt, __v: 1},
+        {
+          id: user,
+          name,
+          email,
+          password: hashedPassword,
+          role,
+          isVerified,
+          isDisabled,
+          createdAt,
+          __v: 1,
+        },
       );
-    }
-    else {
+    } else {
       log.error("Could not create user");
       return throwError({
         status: Status.BadRequest,
@@ -49,44 +69,60 @@ class UserService {
     return user;
   }
 
-
-/**
+  /**
  * Signup user Service
  * @param name
  * @param email
  * @param password
  * @returns Promise<ObjectId | Error> Returns Mongo Id of user document
  */
-public static async signupUser(
-  options: SignupUserStructure,
-): Promise<ObjectId | Error> {
-  const { name, email, password, role, isVerified, isDisabled} = options;
-  const hashedPassword = await HashHelper.encrypt(password);
-  const createdAt = new Date();
+  public static async signupUser(
+    options: SignupUserStructure,
+  ): Promise<ObjectId | Error> {
+    const { name, email, password, role, isVerified, isDisabled } = options;
+    const hashedPassword = await HashHelper.encrypt(password);
+    const createdAt = new Date();
 
-  const user: ObjectId = await User.insertOne(
-    { name, email, password: hashedPassword, role, isVerified, isDisabled, createdAt, __v: 1},
-  );
-
-  if(user){
-    const user_history: ObjectId = await UserHistory.insertOne(
-      {id:user,  name, email, password: hashedPassword, role, isVerified, isDisabled, createdAt, __v: 1},
+    const user: ObjectId = await User.insertOne(
+      {
+        name,
+        email,
+        password: hashedPassword,
+        role,
+        isVerified,
+        isDisabled,
+        createdAt,
+        __v: 1,
+      },
     );
-  }
-  else {
-    log.error("Could not create user");
-    return throwError({
-      status: Status.BadRequest,
-      name: "BadRequest",
-      path: "user",
-      param: "user",
-      message: `Could not create user`,
-      type: "BadRequest",
-    });
-  }
-  return user;
-}
 
+    if (user) {
+      const user_history: ObjectId = await UserHistory.insertOne(
+        {
+          id: user,
+          name,
+          email,
+          password: hashedPassword,
+          role,
+          isVerified,
+          isDisabled,
+          createdAt,
+          __v: 1,
+        },
+      );
+    } else {
+      log.error("Could not create user");
+      return throwError({
+        status: Status.BadRequest,
+        name: "BadRequest",
+        path: "user",
+        param: "user",
+        message: `Could not create user`,
+        type: "BadRequest",
+      });
+    }
+    return user;
+  }
 
   /**
    * Get users service
@@ -114,8 +150,18 @@ public static async signupUser(
         type: "NotFound",
       });
     }
-    const { name, email, role, isDisabled, isVerified, createdAt, updatedAt } = user;
-    return { id, name, email, role, isDisabled, isVerified, createdAt, updatedAt };
+    const { name, email, role, isDisabled, isVerified, createdAt, updatedAt } =
+      user;
+    return {
+      id,
+      name,
+      email,
+      role,
+      isDisabled,
+      isVerified,
+      createdAt,
+      updatedAt,
+    };
   }
 
   /**
@@ -141,7 +187,7 @@ public static async signupUser(
       });
     }
     const { __v } = user;
-    const new___v = __v + 1
+    const new___v = __v + 1;
     const { name, role, isVerified, isDisabled } = options;
     const updatedAt = new Date();
     const result: ({
@@ -155,16 +201,22 @@ public static async signupUser(
         isVerified,
         isDisabled,
         updatedAt,
-        __v: new___v
+        __v: new___v,
       },
-    },
-    );
-    if(result){
+    });
+    if (result) {
       const user_history: ObjectId = await UserHistory.insertOne(
-        {id:ObjectId(id) , name, role, isVerified, isDisabled, updatedAt, __v: new___v},
+        {
+          id: ObjectId(id),
+          name,
+          role,
+          isVerified,
+          isDisabled,
+          updatedAt,
+          __v: new___v,
+        },
       );
-    }
-    else {
+    } else {
       return throwError({
         status: Status.BadRequest,
         name: "BadRequest",
@@ -198,14 +250,24 @@ public static async signupUser(
     }
     const deleteCount: number = await User.deleteOne({ _id: ObjectId(id) });
     if (deleteCount) {
-      const {name, email, role, isVerified, isDisabled, createdAt,  __v } = user;
-      const new___v = __v + 1
+      const { name, email, role, isVerified, isDisabled, createdAt, __v } =
+        user;
+      const new___v = __v + 1;
       const updatedAt = new Date();
       const user_history: ObjectId = await UserHistory.insertOne(
-        {id:ObjectId(id) , name, email, role, isVerified, isDisabled, createdAt, updatedAt, __v: new___v},
+        {
+          id: ObjectId(id),
+          name,
+          email,
+          role,
+          isVerified,
+          isDisabled,
+          createdAt,
+          updatedAt,
+          __v: new___v,
+        },
       );
-    }
-    else {
+    } else {
       return throwError({
         status: Status.BadRequest,
         name: "BadRequest",

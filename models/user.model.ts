@@ -6,7 +6,7 @@ export interface UserSchema {
   email: string;
   password: string;
   role: string;
-  isVerified : boolean;
+  isVerified: boolean;
   isDisabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;

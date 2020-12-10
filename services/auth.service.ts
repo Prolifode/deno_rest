@@ -27,8 +27,16 @@ class AuthService {
     if (
       user && user.password && await HashHelper.compare(password, user.password)
     ) {
-      const { _id, name, email, role, isVerified, isDisabled, createdAt, updatedAt }:
-        UserSchema = user;
+      const {
+        _id,
+        name,
+        email,
+        role,
+        isVerified,
+        isDisabled,
+        createdAt,
+        updatedAt,
+      }: UserSchema = user;
       const tokens: TokenStructure | Error = await TokenService
         .generateAuthTokensService(_id?.$oid);
       return ({

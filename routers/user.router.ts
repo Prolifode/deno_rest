@@ -4,11 +4,11 @@ import { auth } from "../middlewares/auth.middleware.ts";
 import { validate } from "../middlewares/validate.middleware.ts";
 import {
   createUserValidation,
-  signupUserValidation,
   deleteUserValidation,
   getUsersValidation,
   getUserValidation,
   meValidation,
+  signupUserValidation,
   updateUserValidation,
 } from "../validations/user.validation.ts";
 
@@ -26,7 +26,6 @@ router.post(
   validate(signupUserValidation),
   UserController.signup,
 );
-
 
 router.get(
   "/api/users",

@@ -27,7 +27,6 @@ export const createUserValidation = {
   }),
 };
 
-
 export const signupUserValidation = {
   body: yup.object({
     name: yup
@@ -48,9 +47,6 @@ export const signupUserValidation = {
       .max(255),
   }),
 };
-
-
-
 
 export const meValidation = {};
 
