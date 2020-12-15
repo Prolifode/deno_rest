@@ -21,7 +21,7 @@ class AuthService {
   public static async login(
     { email, password }: { email: string; password: string },
   ): Promise<LoginStructure | Error> {
-    const user: UserSchema | null = await User.findOne(
+    const user: UserSchema | undefined = await User.findOne(
       { email, isDisabled: false },
     );
     if (
@@ -38,11 +38,11 @@ class AuthService {
         updatedAt,
       }: UserSchema = user;
       const tokens: TokenStructure | Error = await TokenService
-        .generateAuthTokensService(_id?.$oid);
+        .generateAuthTokensService(_id.toString());
       return ({
         tokens,
         user: {
-          id: _id?.$oid as string,
+          id: _id.toString(),
           name,
           email,
           role,
@@ -76,7 +76,9 @@ class AuthService {
     if ("user" in refreshTokenDoc) {
       const userId = refreshTokenDoc.user;
       const user: UserStructure | Error = await UserService.getUser(userId);
-      await TokenService.removeExistingRefreshToken(refreshTokenDoc._id?.$oid);
+      await TokenService.removeExistingRefreshToken(
+        refreshTokenDoc?._id?.toString(),
+      );
       return await TokenService.generateRefreshTokensService(
         "id" in user ? user.id : undefined,
       );

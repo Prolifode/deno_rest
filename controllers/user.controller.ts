@@ -74,7 +74,7 @@ class UserController {
    * @param response
    * @returns Promise<void>
    */
-  public static async me({ state, response }: RouterContext): Promise<void> {
+  public static me({ state, response }: RouterContext): void {
     log.debug("Getting me data");
     response.body = state;
   }

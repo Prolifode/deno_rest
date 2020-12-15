@@ -1,7 +1,7 @@
 import db from "../db/db.ts";
 
 export interface TokenSchema {
-  _id?: { $oid?: string };
+  _id?: string;
   token: string;
   user: string;
   type: string;

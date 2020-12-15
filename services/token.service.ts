@@ -1,5 +1,5 @@
 import config from "../config/config.ts";
-import { ObjectId, Status } from "../deps.ts";
+import { Document, ObjectId, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import { Token, TokenSchema } from "../models/token.model.ts";
@@ -10,9 +10,9 @@ class TokenService {
    * Save token service
    * @private
    * @param options Options: token, user, expires, type,blacklisted are accepted
-   * @returns Promise<ObjectId> Returns Mongodb ObjectId
+   * @returns Promise<Document> Returns Mongodb Document
    */
-  private static saveTokenService(options: TokenSchema): Promise<ObjectId> {
+  private static saveTokenService(options: TokenSchema): Promise<Document> {
     const createdAt = new Date();
     const { token, user, expires, type, blacklisted } = options;
     return Token.insertOne(
@@ -131,7 +131,9 @@ class TokenService {
         type: "NotFound",
       });
     }
-    const deleteCount: number = await Token.deleteOne({ _id: ObjectId(id) });
+    const deleteCount: number = await Token.deleteOne(
+      { _id: new ObjectId(id) },
+    );
     if (!deleteCount) {
       return throwError({
         status: Status.NotFound,
