@@ -1,12 +1,9 @@
+import { Document, ObjectId, Status } from "../deps.ts";
 import HashHelper from "../helpers/hash.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import log from "../middlewares/logger.middleware.ts";
 import { User, UserSchema } from "../models/user.model.ts";
-import {
-  UserHistory,
-  UserHistorySchema,
-} from "../models/user_history.model.ts";
-import { ObjectId, Status } from "../deps.ts";
+import { UserHistory } from "../models/user_history.model.ts";
 import type {
   CreateUserStructure,
   SignupUserStructure,
@@ -19,16 +16,16 @@ class UserService {
   /**
    * Create user Service
    * @param options
-   * @returns Promise<ObjectId | Error> Returns Mongo Id of user document
+   * @returns Promise<Document | Error> Returns Mongo Document of user
    */
   public static async createUser(
     options: CreateUserStructure,
-  ): Promise<ObjectId | Error> {
+  ): Promise<Document | Error> {
     const { name, email, password, role, isVerified, isDisabled } = options;
     const hashedPassword = await HashHelper.encrypt(password);
     const createdAt = new Date();
 
-    const user: ObjectId = await User.insertOne(
+    const user: Document = await User.insertOne(
       {
         name,
         email,
@@ -42,7 +39,7 @@ class UserService {
     );
 
     if (user) {
-      const user_history: ObjectId = await UserHistory.insertOne(
+      await UserHistory.insertOne(
         {
           id: user,
           name,
@@ -70,20 +67,18 @@ class UserService {
   }
 
   /**
- * Signup user Service
- * @param name
- * @param email
- * @param password
- * @returns Promise<ObjectId | Error> Returns Mongo Id of user document
- */
+   * Signup user Service
+   * @returns Promise<Document | Error> Returns Mongo Id of user document
+   * @param options
+   */
   public static async signupUser(
     options: SignupUserStructure,
-  ): Promise<ObjectId | Error> {
+  ): Promise<Document | Error> {
     const { name, email, password, role, isVerified, isDisabled } = options;
     const hashedPassword = await HashHelper.encrypt(password);
     const createdAt = new Date();
 
-    const user: ObjectId = await User.insertOne(
+    const user: Document = await User.insertOne(
       {
         name,
         email,
@@ -97,7 +92,7 @@ class UserService {
     );
 
     if (user) {
-      const user_history: ObjectId = await UserHistory.insertOne(
+      await UserHistory.insertOne(
         {
           id: user,
           name,
@@ -126,10 +121,10 @@ class UserService {
 
   /**
    * Get users service
-   * @returns UserSchema[] Returns Array of users documents
+   * @returns Promise<UserSchema[]> Returns Array of users documents
    */
-  public static async getUsers(): Promise<UserSchema[]> {
-    return User.find();
+  public static getUsers(): Promise<UserSchema[]> {
+    return User.find().toArray();
   }
 
   /**
@@ -138,7 +133,9 @@ class UserService {
    * @returns Promise<UserSchema | Error> Returns user document
    */
   public static async getUser(id: string): Promise<UserStructure | Error> {
-    const user: (UserSchema | null) = await User.findOne({ _id: ObjectId(id) });
+    const user: (UserSchema | undefined) = await User.findOne(
+      { _id: new ObjectId(id) },
+    );
     if (!user) {
       log.error("User not found");
       return throwError({
@@ -174,7 +171,9 @@ class UserService {
     id: string,
     options: UpdateUserStructure,
   ): Promise<UpdatedStructure | Error> {
-    const user: (UserSchema | null) = await User.findOne({ _id: ObjectId(id) });
+    const user: (UserSchema | undefined) = await User.findOne(
+      { _id: new ObjectId(id) },
+    );
     if (!user) {
       log.error("User not found");
       return throwError({
@@ -187,33 +186,35 @@ class UserService {
       });
     }
     const { __v } = user;
-    const new___v = __v + 1;
+    const NEW___V = __v + 1;
     const { name, role, isVerified, isDisabled } = options;
     const updatedAt = new Date();
     const result: ({
+      // deno-lint-ignore no-explicit-any
+      upsertedId: any;
+      upsertedCount: number;
       matchedCount: number;
       modifiedCount: number;
-      upsertedId: ObjectId | null;
-    }) = await User.updateOne({ _id: ObjectId(id) }, {
+    }) = await User.updateOne({ _id: new ObjectId(id) }, {
       $set: {
         name,
         role,
         isVerified,
         isDisabled,
         updatedAt,
-        __v: new___v,
+        __v: NEW___V,
       },
     });
     if (result) {
-      const user_history: ObjectId = await UserHistory.insertOne(
+      await UserHistory.insertOne(
         {
-          id: ObjectId(id),
+          id: new ObjectId(id),
           name,
           role,
           isVerified,
           isDisabled,
           updatedAt,
-          __v: new___v,
+          __v: NEW___V,
         },
       );
     } else {
@@ -236,7 +237,9 @@ class UserService {
    * @returns Promise<number | Error Returns deleted count
    */
   public static async removeUser(id: string): Promise<number | Error> {
-    const user: (UserSchema | null) = await User.findOne({ _id: ObjectId(id) });
+    const user: (UserSchema | undefined) = await User.findOne(
+      { _id: ObjectId(id) },
+    );
     if (!user) {
       log.error("User not found");
       return throwError({
@@ -252,11 +255,11 @@ class UserService {
     if (deleteCount) {
       const { name, email, role, isVerified, isDisabled, createdAt, __v } =
         user;
-      const new___v = __v + 1;
+      const NEW___V = __v + 1;
       const updatedAt = new Date();
-      const user_history: ObjectId = await UserHistory.insertOne(
+      await UserHistory.insertOne(
         {
-          id: ObjectId(id),
+          id: new ObjectId(id),
           name,
           email,
           role,
@@ -264,7 +267,7 @@ class UserService {
           isDisabled,
           createdAt,
           updatedAt,
-          __v: new___v,
+          __v: NEW___V,
         },
       );
     } else {

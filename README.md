@@ -30,19 +30,19 @@ This is a Boilerplate project to create Deno RESTful API using oak and deno_mong
 ### Install / Upgrade
 **Using Deno:**
 ```
-deno upgrade --version 1.5.1
+deno upgrade --version 1.6.1
 ```
 
 
 **With Shell:**
 ```
-curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.5.1
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.6.1
 ```
 
 
 **With PowerShell:**
 ```
-$v="1.5.1"; iwr https://deno.land/x/install/install.ps1 -useb | iex
+$v="1.6.1"; iwr https://deno.land/x/install/install.ps1 -useb | iex
 ```
 
 
@@ -203,7 +203,7 @@ example of User Model:
 import db from "../db/db.ts";
 
 export interface UserSchema {
-  _id?: { $oid?: string };
+  _id?: string;
   name: string;
   email: string;
   password: string;

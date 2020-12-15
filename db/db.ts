@@ -1,5 +1,5 @@
-import { MongoClient } from "../deps.ts";
 import configs from "../config/config.ts";
+import { MongoClient } from "../deps.ts";
 import log from "../middlewares/logger.middleware.ts";
 import Seed from "../seed.ts";
 
@@ -26,10 +26,10 @@ class Database {
   /**
    * Function to connect to mongo db
    */
-  connect() {
+  async connect() {
     log.info("Database connecting...");
     const client: MongoClient = new MongoClient();
-    client.connectWithUri(this.url);
+    await client.connect(this.url);
     this.client = client;
     log.info("Database connected!");
     if (seed) {
@@ -50,6 +50,6 @@ class Database {
 }
 
 const db = new Database(dbName, mongoUrl);
-db.connect();
+await db.connect();
 
 export default db;
