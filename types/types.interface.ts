@@ -37,7 +37,7 @@ export interface UpdateUserStructure {
 export interface UpdatedStructure {
   matchedCount: number;
   modifiedCount: number;
-  upsertedId: ObjectId | null;
+  upsertedId: typeof ObjectId | null;
 }
 
 export interface Err {

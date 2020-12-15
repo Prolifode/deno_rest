@@ -1,12 +1,12 @@
 import db from "../db/db.ts";
 
 export interface UserSchema {
-  _id: { $oid?: string };
+  _id: string;
   name: string;
   email: string;
   password: string;
   role: string;
-  doc_version: number;
+  docVersion: number;
   isDisabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;
