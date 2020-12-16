@@ -1,28 +1,29 @@
-import { IRequestBody, sendMail } from "../deps.ts";
-import { from_email } from "./config/config.ts";
+import config from "../config/config.ts";
+import type { IRequestBody } from "../deps.ts";
+import { sendMail } from "../deps.ts";
 
 class MailHelper {
   /**
-     * Send a confirmation email to complete a registration
-     * @param user
-     * @param to_email
-     * @param token
-     * @returns Promise<Payload | Error> Returns sendMail response
-     */
+   * Send a confirmation email to complete a registration
+   * @param user
+   * @param toEmail
+   * @param token
+   * @returns Promise<Payload | Error> Returns sendMail response
+   */
 
   public static async sendConfirmationMail(
     user: string,
-    to_email: string,
+    toEmail: string,
     token: string,
   ) {
     const mail: IRequestBody = {
       personalizations: [
         {
           subject: "Confirmation your registration",
-          to: [{ name: user, email: to_email }],
+          to: [{ name: user, email: toEmail }],
         },
       ],
-      from: { email: from_email },
+      from: { email: config.fromEmail },
       content: [
         {
           type: "text/html",
@@ -33,9 +34,7 @@ class MailHelper {
       ],
     };
 
-    const response = await sendMail(mail, { apiKey: "REDACTED" });
-
-    return response;
+    return await sendMail(mail, { apiKey: "REDACTED" });
   }
 }
 

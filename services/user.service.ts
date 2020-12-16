@@ -3,7 +3,7 @@ import HashHelper from "../helpers/hash.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import log from "../middlewares/logger.middleware.ts";
 import { User, UserSchema } from "../models/user.model.ts";
-import { UserHistory, } from "../models/user_history.model.ts";
+import { UserHistory } from "../models/user_history.model.ts";
 import type {
   CreateUserStructure,
   SignupUserStructure,
@@ -186,10 +186,11 @@ class UserService {
       });
     }
     const { __v } = user;
-    const new___v = __v + 1;
+    const NEW___V = __v + 1;
     const { name, role, isVerified, isDisabled } = options;
     const updatedAt = new Date();
     const result: ({
+      // deno-lint-ignore no-explicit-any
       upsertedId: any;
       upsertedCount: number;
       matchedCount: number;
@@ -201,7 +202,7 @@ class UserService {
         isVerified,
         isDisabled,
         updatedAt,
-        __v: new___v,
+        __v: NEW___V,
       },
     });
     if (result) {
@@ -213,7 +214,7 @@ class UserService {
           isVerified,
           isDisabled,
           updatedAt,
-          __v: new___v,
+          __v: NEW___V,
         },
       );
     } else {
@@ -236,7 +237,9 @@ class UserService {
    * @returns Promise<number | Error Returns deleted count
    */
   public static async removeUser(id: string): Promise<number | Error> {
-    const user: (UserSchema | undefined) = await User.findOne({ _id: ObjectId(id) });
+    const user: (UserSchema | undefined) = await User.findOne(
+      { _id: ObjectId(id) },
+    );
     if (!user) {
       log.error("User not found");
       return throwError({
@@ -250,8 +253,9 @@ class UserService {
     }
     const deleteCount: number = await User.deleteOne({ _id: ObjectId(id) });
     if (deleteCount) {
-      const { name, email, role, isVerified, isDisabled, createdAt, __v } = user;
-      const new___v = __v + 1;
+      const { name, email, role, isVerified, isDisabled, createdAt, __v } =
+        user;
+      const NEW___V = __v + 1;
       const updatedAt = new Date();
       await UserHistory.insertOne(
         {
@@ -263,7 +267,7 @@ class UserService {
           isDisabled,
           createdAt,
           updatedAt,
-          __v: new___v,
+          __v: NEW___V,
         },
       );
     } else {
