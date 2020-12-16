@@ -7,7 +7,7 @@ export interface VerificationSchema {
   email: string; // User's Email
   createdAt: Date;
   updatedAt: Date;
-  __v: Number;
+  __v: number;
 }
 
 export const Verification = db.getDatabase.collection<VerificationSchema>(

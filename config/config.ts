@@ -39,7 +39,7 @@ const config: ({
   clientProtocol: string;
   url: string;
   clientUrl: string;
-  from_email: string;
+  fromEmail: string;
 }) = {
   env,
   appName: envConfig.APP_NAME,
@@ -61,7 +61,7 @@ const config: ({
   url: `${envConfig.PROTOCOL}://${envConfig.HOST}:${envConfig.PORT}`,
   clientUrl:
     `${envConfig.CLIENT_PROTOCOL}://${envConfig.CLIENT_HOST}:${envConfig.CLIENT_PORT}`,
-  from_email: `${envConfig.EMAIL}`,
+  fromEmail: `${envConfig.EMAIL}`,
 };
 
 export default config;

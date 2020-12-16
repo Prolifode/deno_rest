@@ -20,3 +20,5 @@ export { oakCors } from "https://deno.land/x/cors/mod.ts";
 export type { Header, Payload } from "https://deno.land/x/djwt/mod.ts";
 export { create, verify } from "https://deno.land/x/djwt/mod.ts";
 export { yup };
+export type { IRequestBody } from "https://deno.land/x/sendgrid/mod.ts";
+export { sendMail } from "https://deno.land/x/sendgrid/mod.ts";
