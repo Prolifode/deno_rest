@@ -5,11 +5,6 @@ export interface TokenStructure {
   refresh: { expires: Date; token: string };
 }
 
-export interface TokenStructure {
-  access: { expires: Date; token: string };
-  refresh: { expires: Date; token: string };
-}
-
 export interface UserStructure {
   id: string;
   name: string;

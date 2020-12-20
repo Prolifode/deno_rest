@@ -2,7 +2,10 @@ import config from "../config/config.ts";
 import { Document, ObjectId, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
-import { Token as Verification, VerificationSchema } from "../models/verification.model.ts";
+import {
+  Token as Verification,
+  VerificationSchema,
+} from "../models/verification.model.ts";
 import type { TokenStructure } from "../types/types.interface.ts";
 
 class VerificationService {
@@ -12,7 +15,9 @@ class VerificationService {
    * @param options Options: token, email, blacklisted are accepted
    * @returns Promise<Document> Returns Mongodb Document
    */
-  private static saveTokenService(options: VerificationSchema): Promise<Document> {
+  private static saveTokenService(
+    options: VerificationSchema,
+  ): Promise<Document> {
     const createdAt = new Date();
     const { token, email, blacklisted } = options;
     return Verification.insertOne(
@@ -38,9 +43,9 @@ class VerificationService {
         type: "NotFound",
       });
     }
-    
-    token = v4.generate()
-   
+
+    token = v4.generate();
+
     const accessTokenExpires = config.jwtAccessExpiration;
     const accessToken = await JwtHelper.getToken(accessTokenExpires, userId);
     const refreshTokenExpires = config.jwtRefreshExpiration;
