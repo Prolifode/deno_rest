@@ -3,10 +3,10 @@ import { Document, ObjectId, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import {
-  Token as Verification,
+  Verification,
   VerificationSchema,
 } from "../models/verification.model.ts";
-import type { TokenStructure } from "../types/types.interface.ts";
+import type { VerificationTokenStructure } from "../types/types.interface.ts";
 
 class VerificationService {
   /**
@@ -26,95 +26,67 @@ class VerificationService {
   }
 
   /**
-   * Generate Auth token(JWT) service for login user
-   * @param userId User's Mongo id
-   * @returns Promise<TokenStructure | Error> Returns access and refresh tokens with expiry
+   * Generate Verification token(JWT) service for register user
+   * @param email User's email
+   * @returns Promise<VerificationTokenStructure | Error> Returns access and refresh tokens with expiry
    */
-  public static async generateAuthTokensService(
-    userId?: string,
-  ): Promise<VerificationSchema | Error> {
-    if (!userId) {
+  public static async generateVerificationTokensService(
+    email?: string,
+  ): Promise<VerificationTokenStructure | Error> {
+    if (!email) {
       return throwError({
         status: Status.NotFound,
         name: "NotFound",
         path: "access_token",
         param: "access_token",
-        message: `userId is invalid`,
+        message: `email is invalid`,
         type: "NotFound",
       });
     }
 
     token = v4.generate();
 
-    const accessTokenExpires = config.jwtAccessExpiration;
-    const accessToken = await JwtHelper.getToken(accessTokenExpires, userId);
-    const refreshTokenExpires = config.jwtRefreshExpiration;
-    const refreshToken = await JwtHelper.getToken(refreshTokenExpires, userId);
+    const verificationTokenExpires = config.jwtAccessExpiration;
+    const verificationToken = await JwtHelper.getToken(
+      verificationTokenExpires,
+      email,
+    );
 
     await this.saveTokenService({
-      token: refreshToken,
-      user: userId,
-      expires: new Date(refreshTokenExpires * 1000), // milliseconds
-      type: "refresh",
+      token: verificationToken,
+      email: email,
+      expires: new Date(verificationTokenExpires * 1000), // milliseconds
       blacklisted: false,
     });
+
     return {
-      access: {
-        token: accessToken,
-        expires: new Date(accessTokenExpires * 1000), // milliseconds,
-      },
-      refresh: {
-        token: refreshToken,
-        expires: new Date(refreshTokenExpires * 1000), // milliseconds,
+      verification: {
+        token: verificationToken,
+        expires: new Date(verificationTokenExpires * 1000), // milliseconds,
       },
     };
   }
 
   /**
-   * Generate Refresh token(JWT) service for generating new refresh and access tokens
-   * @param userId User's Mongo id
-   * @returns Promise<TokenStructure | Error> Returns access and refresh tokens with expiry
-   */
-  public static async generateRefreshTokensService(
-    userId?: string,
-  ): Promise<VerificationSchema | Error> {
-    if (!userId) {
-      return throwError({
-        status: Status.NotFound,
-        name: "NotFound",
-        path: "refresh_token",
-        param: "refresh_token",
-        message: `userId is invalid`,
-        type: "NotFound",
-      });
-    }
-    return await this.generateAuthTokensService(
-      userId,
-    );
-  }
-
-  /**
    * Verify JWT service
    * @param token JWT token
-   * @param type "refresh" or "access"
    * @returns Promise<TokenSchema | Error> Returns decrypted payload from JWT
    */
   public static async verifyTokenService(
     token: string,
-    type: string,
   ): Promise<VerificationSchema | Error> {
     // deno-lint-ignore no-explicit-any
     const payload: any = await JwtHelper.getJwtPayload(token);
     const tokenDoc = await Verification.findOne(
-      { token, type, user: payload.id, blacklisted: false },
+      { token, email: payload.id, blacklisted: false },
     );
     if (!tokenDoc) {
       return throwError({
         status: Status.Unauthorized,
         name: "Unauthorized",
-        path: `${type}_token`,
-        param: `${type}_token`,
-        message: `${type}_token is invalid`,
+        path: `token`,
+        param: `token`,
+        message: `token is invalid`,
         type: "Unauthorized",
       });
     }

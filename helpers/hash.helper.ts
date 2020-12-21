@@ -5,9 +5,8 @@ class HashHelper {
   private static key: string = configs.key;
   private static salt: string = configs.salt;
 
-  private static aes(key?: string): AES {
-    key = (key === null || key === undefined) ? this.key : key;
-    return new AES(key, { mode: "cbc", iv: this.salt });
+  private static aes(): AES {
+    return new AES(this.key, { mode: "cbc", iv: this.salt });
   }
 
   /**
@@ -15,8 +14,8 @@ class HashHelper {
    * @param str
    * @returns Promise<string> Returns encrypted cipher in hex format
    */
-  public static async encrypt(str: string, key?: string): Promise<string> {
-    const cipher = await this.aes(key).encrypt(str);
+  public static async encrypt(str: string): Promise<string> {
+    const cipher = await this.aes().encrypt(str);
     return cipher.hex();
   }
 
