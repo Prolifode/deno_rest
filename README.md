@@ -27,22 +27,22 @@ This is a Boilerplate project to create Deno RESTful API using oak and deno_mong
  - [x] [god_crypto](https://deno.land/x/god_crypto) - Encrypts passwords in AES to save in database collection.
 
 ## Getting Started
-### Install / Upgrade
+### Install / Upgrade
 **Using Deno:**
 ```
-deno upgrade --version 1.6.1
+deno upgrade --version 1.8.0
 ```
 
 
 **With Shell:**
 ```
-curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.6.1
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.8.0
 ```
 
 
 **With PowerShell:**
 ```
-$v="1.6.1"; iwr https://deno.land/x/install/install.ps1 -useb | iex
+$v="1.8.0"; iwr https://deno.land/x/install/install.ps1 -useb | iex
 ```
 
 
@@ -115,6 +115,7 @@ for test environment create a file `.env.test` under `.env` directory and add ne
 
 ###  Install denon
 If its your first run, please install `denon` from [https://deno.land/x/denon](https://deno.land/x/denon)
+If there is error while installing denon, refer this solution: https://github.com/denosaurs/denon/issues/122#issuecomment-770895766
 
 ### Install Dependencies
 To install dependencies, run following command in your terminal.
