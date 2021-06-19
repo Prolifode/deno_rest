@@ -1,5 +1,5 @@
 import { roleRights } from "../config/roles.ts";
-import { Context, Status } from "../deps.ts";
+import { Context, State, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import UserService from "../services/user.service.ts";
 import type { UserStructure } from "../types/types.interface.ts";
@@ -40,7 +40,11 @@ const checkRights = (
  * @returns Promise<void>
  */
 export const auth = (...requiredRights: string[]) =>
-  async (ctx: Context, next: () => Promise<void>): Promise<void> => {
+  // deno-lint-ignore no-explicit-any
+  async (
+    ctx: Context<State, Record<string, any>>,
+    next: () => Promise<unknown>,
+  ): Promise<void> => {
     let JWT: string;
     const jwt: string = ctx.request.headers.get("Authorization")
       ? ctx.request.headers.get("Authorization")!

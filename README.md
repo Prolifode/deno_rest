@@ -1,9 +1,12 @@
 # Deno REST - A Boilerplate for deno RESTful apis
+
 <img src="https://deno.land/images/deno_logo_4.gif" alt="logo" width="300"/>
 
-This is a Boilerplate project to create Deno RESTful API using oak and deno_mongo
+This is a Boilerplate project to create Deno RESTful API using oak and
+deno_mongo
 
 ### Features
+
 - Model, Controller, Service based project structure
 - MongoDB
 - JWT authentication
@@ -19,46 +22,54 @@ This is a Boilerplate project to create Deno RESTful API using oak and deno_mong
 
 ### Libraries Used
 
- - [x] [Oak](https://deno.land/x/oak) - A middleware framework for Deno's net server
- - [x] [deno_mongo](https://deno.land/x/mongo) - MongoDB driver for Deno
- - [x] [cors](https://deno.land/x/cors) - Deno.js CORS middleware
- - [x] [djwt](https://deno.land/x/djwt) - To make JSON Web Tokens in deno. Based on JWT and JWS specifications.
- - [x] [yup](https://github.com/jquense/yup) - Schema builder for value parsing and validation
- - [x] [god_crypto](https://deno.land/x/god_crypto) - Encrypts passwords in AES to save in database collection.
+- [x] [Oak](https://deno.land/x/oak) - A middleware framework for Deno's net
+  server
+- [x] [deno_mongo](https://deno.land/x/mongo) - MongoDB driver for Deno
+- [x] [cors](https://deno.land/x/cors) - Deno.js CORS middleware
+- [x] [djwt](https://deno.land/x/djwt) - To make JSON Web Tokens in deno. Based
+  on JWT and JWS specifications.
+- [x] [yup](https://github.com/jquense/yup) - Schema builder for value parsing
+  and validation
+- [x] [god_crypto](https://deno.land/x/god_crypto) - Encrypts passwords in AES
+  to save in database collection.
 
 ## Getting Started
-### Install / Upgrade
-**Using Deno:**
-```
-deno upgrade --version 1.8.0
-```
 
+### Install / Upgrade
+
+**Using Deno:**
+
+```
+deno upgrade --version 1.11.1
+```
 
 **With Shell:**
-```
-curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.8.0
-```
 
+```
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.11.1
+```
 
 **With PowerShell:**
-```
-$v="1.8.0"; iwr https://deno.land/x/install/install.ps1 -useb | iex
-```
 
+```
+$v="1.11.1"; iwr https://deno.land/x/install/install.ps1 -useb | iex
+```
 
 Clone this repository to your local machine
+
 ```
 git clone https://github.com/vicky-gonsalves/deno_rest.git
 ```
 
 **Directory Structure**
+
 ```
 .
 ├── .env/
 │   ├── .env.example
-│   ├── .env.development  	// git ignored
-│   ├── .env.production		// git ignored
-│   └── .env.test			// git ignored
+│   ├── .env.development  	        // git ignored
+│   ├── .env.production		        // git ignored
+│   └── .env.test                       // git ignored
 ├── config/
 │   ├── config.ts
 │   └── roles.ts
@@ -108,33 +119,46 @@ git clone https://github.com/vicky-gonsalves/deno_rest.git
 ```
 
 ## Setup
-### Set environments
-Review `.env/.env.example` file and create required `.env` file suitable to your needs.
-For example: for development environment create a file `.env.development` under `.env` directory
-for test environment create a file `.env.test` under `.env` directory and add necessary variables.
 
-###  Install denon
-If its your first run, please install `denon` from [https://deno.land/x/denon](https://deno.land/x/denon)
-If there is error while installing denon, refer this solution: https://github.com/denosaurs/denon/issues/122#issuecomment-770895766
+### Set environments
+
+Review `.env/.env.example` file and create required `.env` file suitable to your
+needs. For example: for development environment create a file `.env.development`
+under `.env` directory for test environment create a file `.env.test` under
+`.env` directory and add necessary variables.
+
+### Install denon
+
+If its your first run, please install `denon` from
+[https://deno.land/x/denon](https://deno.land/x/denon) If there is error while
+installing denon, refer this solution:
+https://github.com/denosaurs/denon/issues/122#issuecomment-770895766
 
 ### Install Dependencies
-To install dependencies, run following command in your terminal.
-**Note: Terminal path must be project directory's root path**
+
+To install dependencies, run following command in your terminal. **Note:
+Terminal path must be project directory's root path**
+
 ```
 deno cache --reload --unstable --lock-write --lock=lock.json ./deps.ts
 ```
-**OR**
-run the `reload_deps.sh` file from the project directory
 
-This will automatically download all the dependencies and update `lock.json` file
+**OR** run the `reload_deps.sh` file from the project directory
+
+This will automatically download all the dependencies and update `lock.json`
+file
 
 ### SEED Database
-If you need to seed (run migrations) database initially,
-Simply enable `SEED=true` in your .env file
-You can add or edit any seed file under `data` directory. Basic example of seed file is provided in `data/users.json`
 
-### Manually control  Individual seed file
-Logic to control seed is located in `seed.ts` where you can add multiple seed files as follow:
+If you need to seed (run migrations) database initially, Simply enable
+`SEED=true` in your .env file You can add or edit any seed file under `data`
+directory. Basic example of seed file is provided in `data/users.json`
+
+### Manually control Individual seed file
+
+Logic to control seed is located in `seed.ts` where you can add multiple seed
+files as follow:
+
 ```
 const seedCollections: Array<Record<string, boolean>> = [
   { users: true },  // collection_name: boolean
@@ -143,21 +167,27 @@ const seedCollections: Array<Record<string, boolean>> = [
   ...
   ...
 ```
+
 **Note:** file name must be in `collection_name.json` pattern
 
-
 ### RUN
+
 In your project root open terminal and run following command to run the project
+
 ```
 denon start
 ```
 
-##  User Roles and Rights
+## User Roles and Rights
+
 User roles are saved in `config/roles.ts` file as:
+
 ```
 export const roles = ["user", "admin"];
 ```
+
 and Rights are saved as:
+
 ```
 roleRights.set(roles[0], [
   "getMe",
@@ -168,27 +198,29 @@ roleRights.set(roles[1], [
   "manageUsers",
 ]);
 ```
+
 You can add/edit roles and rights as per your requirements.
 
-
 ## API Routes
-All routes are stored under `routers` directory
-Below is the example of `/api/users` route.
-This route is JWT protected
-In *user.router.ts*:
+
+All routes are stored under `routers` directory Below is the example of
+`/api/users` route. This route is JWT protected In _user.router.ts_:
+
 ```
 ...
 /** JWT protected route */
 router.post(
-  "/api/users",  						// route
-  auth("manageUsers"),  				// Auth Guard based on djwt
-  validate(createUserValidation),  		// Yup based validation
-  UserController.create,  				// Controller Function
+  "/api/users",  						    // route
+  auth("manageUsers"),  				            // Auth Guard based on djwt
+  validate(createUserValidation),  		                    // Yup based validation
+  UserController.create,  				            // Controller Function
 );
 ...
 ...
 ```
+
 Non-JWT protected route:
+
 ```
 router.post(
   "/api/auth/login",
@@ -198,8 +230,9 @@ router.post(
 ```
 
 ## Models
-All models are under `models` directory
-example of User Model:
+
+All models are under `models` directory example of User Model:
+
 ```
 import db from "../db/db.ts";
 
@@ -216,9 +249,10 @@ export interface UserSchema {
 
 export const User = db.getDatabase.collection<UserSchema>("users");
 ```
+
 ## Controllers
-Controllers are saved under `controllers` directory
-Example of User Controller:
+
+Controllers are saved under `controllers` directory Example of User Controller:
 
 ```
 ...
@@ -252,8 +286,9 @@ class UserController {
 ```
 
 ## Services
-All Services are under `services` directory
-Example of User service:
+
+All Services are under `services` directory Example of User service:
+
 ```
 class UserService {
   /**
@@ -283,29 +318,34 @@ class UserService {
   }
   ...
   ...
-
 ```
 
 ## Updating `lock.json`
-In your project terminal run following command to update `lock.json` file with latest dependencies
+
+In your project terminal run following command to update `lock.json` file with
+latest dependencies
+
 ```
 deno cache --lock=lock.json --lock-write --unstable ./deps.ts
 ```
-**OR**
-simply run `lock_update.sh` file
+
+**OR** simply run `lock_update.sh` file
 
 ## TODO
+
 -- We are awaiting for a reliable mock library for mongoDB to perform tests.
 
- - [ ] Tests
- - [ ] Docker integration
+- [ ] Tests
+- [ ] Docker integration
 
 ## Known Issues
+
 - Denon does not automatically restarts
 
 ## Contribution
+
 All PRs are welcome
 
 ## LICENSE
-MIT
 
+MIT

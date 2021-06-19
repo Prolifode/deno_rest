@@ -38,7 +38,7 @@ class JwtHelper {
   public static async getJwtPayload(token: string): Promise<Payload | Error> {
     try {
       return await verify(token, jwtSecret, "HS512");
-    } catch (e) {
+    } catch (_e) {
       return throwError({
         status: Status.Unauthorized,
         name: "Unauthorized",

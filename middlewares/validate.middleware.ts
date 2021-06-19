@@ -58,7 +58,7 @@ const checkValidation = async (
  * @returns Promise<void>
  */
 export const validate = (schema: any) =>
-  async (ctx: RouterContext, next: () => Promise<void>): Promise<void> => {
+  async (ctx: RouterContext, next: () => any): Promise<void> => {
     const { params: _params, queries: _query, body: _body } = schema;
     const allQueries = [
       {

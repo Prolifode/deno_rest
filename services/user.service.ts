@@ -124,6 +124,7 @@ class UserService {
     const { isDisabled, name, role } = options;
     const updatedAt = new Date();
     const result: ({
+      // deno-lint-ignore no-explicit-any
       upsertedId: any;
       upsertedCount: number;
       matchedCount: number;
