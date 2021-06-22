@@ -40,8 +40,8 @@ const checkRights = (
  * @returns Promise<void>
  */
 export const auth = (...requiredRights: string[]) =>
-  // deno-lint-ignore no-explicit-any
   async (
+    // deno-lint-ignore no-explicit-any
     ctx: Context<State, Record<string, any>>,
     next: () => Promise<unknown>,
   ): Promise<void> => {
