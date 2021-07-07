@@ -40,19 +40,19 @@ deno_mongo
 **Using Deno:**
 
 ```
-deno upgrade --version 1.11.3
+deno upgrade --version 1.11.5
 ```
 
 **With Shell:**
 
 ```
-curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.11.3
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.11.5
 ```
 
 **With PowerShell:**
 
 ```
-$v="1.11.3"; iwr https://deno.land/x/install/install.ps1 -useb | iex
+$v="1.11.5"; iwr https://deno.land/x/install/install.ps1 -useb | iex
 ```
 
 Clone this repository to your local machine
