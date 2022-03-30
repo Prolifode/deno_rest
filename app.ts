@@ -4,7 +4,7 @@ import log from "./middlewares/logger.middleware.ts";
 import configs from "./config/config.ts";
 import router from "./routers/index.ts";
 
-const { url, port, clientUrl } = configs;
+const { env, url, port, clientUrl } = configs;
 
 const app: Application = new Application();
 
@@ -22,6 +22,7 @@ app.use(errorHandler);
 router.init(app);
 
 app.addEventListener("listen", () => {
+  log.info(`Current Environment: ${env}`);
   log.info(`Server listening at ${url}`);
 });
 

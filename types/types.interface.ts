@@ -1,4 +1,4 @@
-import type { ObjectId } from "../deps.ts";
+import { Bson } from "../deps.ts";
 
 export interface TokenStructure {
   access: { expires: Date; token: string };
@@ -37,7 +37,7 @@ export interface UpdateUserStructure {
 export interface UpdatedStructure {
   matchedCount: number;
   modifiedCount: number;
-  upsertedId: typeof ObjectId | null;
+  upsertedId: typeof Bson.ObjectId | null;
 }
 
 export interface Err {

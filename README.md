@@ -23,15 +23,15 @@ deno_mongo
 ### Libraries Used
 
 - [x] [Oak](https://deno.land/x/oak) - A middleware framework for Deno's net
-  server
+      server
 - [x] [deno_mongo](https://deno.land/x/mongo) - MongoDB driver for Deno
 - [x] [cors](https://deno.land/x/cors) - Deno.js CORS middleware
 - [x] [djwt](https://deno.land/x/djwt) - To make JSON Web Tokens in deno. Based
-  on JWT and JWS specifications.
+      on JWT and JWS specifications.
 - [x] [yup](https://github.com/jquense/yup) - Schema builder for value parsing
-  and validation
-- [x] [god_crypto](https://deno.land/x/god_crypto) - Encrypts passwords in AES
-  to save in database collection.
+      and validation
+- [x] [bcrypt](https://deno.land/x/bcrypt) - Encrypts passwords to save in
+      database collection.
 
 ## Getting Started
 
@@ -40,19 +40,19 @@ deno_mongo
 **Using Deno:**
 
 ```
-deno upgrade --version 1.11.5
+deno upgrade --version 1.20.3
 ```
 
 **With Shell:**
 
 ```
-curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.11.5
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.20.3
 ```
 
 **With PowerShell:**
 
 ```
-$v="1.11.5"; iwr https://deno.land/x/install/install.ps1 -useb | iex
+$v="1.20.3"; iwr https://deno.land/x/install/install.ps1 -useb | iex
 ```
 
 Clone this repository to your local machine

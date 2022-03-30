@@ -1,33 +1,37 @@
-import configs from "../config/config.ts";
-import { create, Header, Payload, Status, verify } from "../deps.ts";
+import { create, Status, verify } from "../deps.ts";
+import type { Header, Payload } from "../deps.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 
-const { jwtSecret } = configs;
-
-const header: Header = {
-  alg: "HS512",
-  typ: "JWT",
-};
+const key = await crypto.subtle.generateKey(
+  { name: "HMAC", hash: "SHA-512" },
+  true,
+  ["sign", "verify"],
+);
 
 class JwtHelper {
   /**
    * Generate JWT token
-   * @param expires
+   * @param exp Expiry
    * @param id
-   * @returns Promise<string> Returns JWT
+   * @returns String Returns JWT
    */
   public static getToken(
-    expires: number,
+    exp: number,
     id?: string,
   ): Promise<string> {
+    const now = Date.now(); // in millis
+    const header: Header = {
+      alg: "HS512",
+      typ: "JWT",
+    };
     const payload: Payload = {
-      iss: "djwt",
-      iat: Date.now(),
+      iss: "deno_rest",
+      iat: now,
       id,
-      exp: Date.now() / 1000 + expires, // in seconds
+      exp,
     };
 
-    return create(header, payload, jwtSecret);
+    return create(header, payload, key);
   }
 
   /**
@@ -37,7 +41,7 @@ class JwtHelper {
    */
   public static async getJwtPayload(token: string): Promise<Payload | Error> {
     try {
-      return await verify(token, jwtSecret, "HS512");
+      return await verify(token, key);
     } catch (_e) {
       return throwError({
         status: Status.Unauthorized,
