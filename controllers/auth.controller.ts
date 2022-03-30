@@ -10,7 +10,7 @@ class AuthController {
    * @returns Promise<void>
    */
   public static async login(
-    { request, response }: RouterContext,
+    { request, response }: RouterContext<string>,
   ): Promise<void> {
     const body = request.body();
     const { email, password } = await body.value;
@@ -25,7 +25,7 @@ class AuthController {
    * @returns Promise<void>
    */
   public static async refreshTokens(
-    { request, response }: RouterContext,
+    { request, response }: RouterContext<string>,
   ): Promise<void> {
     const body = request.body();
     const { refreshToken } = await body.value;

@@ -11,7 +11,7 @@ class UserController {
    * @returns Promise<void>
    */
   public static async create(
-    { request, response }: RouterContext,
+    { request, response }: RouterContext<string>,
   ): Promise<void> {
     const body = request.body();
     const {
@@ -36,7 +36,9 @@ class UserController {
    * @param response
    * @returns Promise<void>
    */
-  public static async fetch({ response }: RouterContext): Promise<void> {
+  public static async fetch(
+    { response }: RouterContext<string>,
+  ): Promise<void> {
     log.debug("Getting users list");
     response.body = await UserService.getUsers();
   }
@@ -47,7 +49,7 @@ class UserController {
    * @param response
    * @returns Promise<void>
    */
-  public static me({ state, response }: RouterContext): void {
+  public static me({ state, response }: RouterContext<string>): void {
     log.debug("Getting me data");
     response.body = state;
   }
@@ -58,7 +60,9 @@ class UserController {
    * @param response
    * @returns Promise<void>
    */
-  public static async show({ params, response }: RouterContext): Promise<void> {
+  public static async show(
+    { params, response }: RouterContext<string>,
+  ): Promise<void> {
     const { id } = params;
     log.debug("Getting user");
     response.body = await UserService.getUser(id as string);
@@ -72,7 +76,7 @@ class UserController {
    * @returns Promise<void>
    */
   public static async update(
-    { params, request, response }: RouterContext,
+    { params, request, response }: RouterContext<string>,
   ): Promise<void> {
     const { id } = params;
     const body = request.body();
@@ -92,7 +96,7 @@ class UserController {
    * @returns Promise<void>
    */
   public static async remove(
-    { params, response }: RouterContext,
+    { params, response }: RouterContext<string>,
   ): Promise<void> {
     const { id } = params;
     log.debug("Removing user");

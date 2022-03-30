@@ -1,7 +1,7 @@
 import { dotEnv } from "../deps.ts";
 
-const env: string = Deno.env.toObject().ENV || "test";
-const envPath: string = `.env/.env.${env}`.toString();
+const env: string = Deno.env.get("ENV") || "development";
+const envPath: string = `environments/.env.${env}`.toString();
 const envConfig = dotEnv({
   path: envPath,
 });
@@ -22,11 +22,8 @@ if (env === "development" || env === "test") {
 const config: ({
   env: string;
   appName: string;
-  key: string;
-  jwtSecret: string;
   jwtAccessExpiration: number;
   jwtRefreshExpiration: number;
-  salt: string;
   ip: string;
   host: string;
   port: number;
@@ -42,11 +39,8 @@ const config: ({
 }) = {
   env,
   appName: envConfig.APP_NAME,
-  key: envConfig.KEY,
-  jwtSecret: envConfig.JWT_SECRET,
   jwtAccessExpiration: Number(envConfig.JWT_ACCESS_TOKEN_EXP),
   jwtRefreshExpiration: Number(envConfig.JWT_REFRESH_TOKEN_EXP),
-  salt: envConfig.SALT,
   ip: envConfig.IP,
   host: envConfig.HOST,
   port: Number(envConfig.PORT),

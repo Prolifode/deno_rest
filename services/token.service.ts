@@ -1,5 +1,5 @@
 import config from "../config/config.ts";
-import { Document, ObjectId, Status } from "../deps.ts";
+import { Bson, Status } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import { throwError } from "../middlewares/errorHandler.middleware.ts";
 import { Token, TokenSchema } from "../models/token.model.ts";
@@ -12,7 +12,9 @@ class TokenService {
    * @param options Options: token, user, expires, type,blacklisted are accepted
    * @returns Promise<Document> Returns Mongodb Document
    */
-  private static saveTokenService(options: TokenSchema): Promise<Document> {
+  private static saveTokenService(
+    options: TokenSchema,
+  ): Promise<string | Bson.ObjectId> {
     const createdAt = new Date();
     const { token, user, expires, type, blacklisted } = options;
     return Token.insertOne(
@@ -38,26 +40,27 @@ class TokenService {
         type: "NotFound",
       });
     }
-    const accessTokenExpires = config.jwtAccessExpiration;
+    const now = Date.now(); // in millis
+    const accessTokenExpires = (now + (config.jwtAccessExpiration * 1000));
     const accessToken = await JwtHelper.getToken(accessTokenExpires, userId);
-    const refreshTokenExpires = config.jwtRefreshExpiration;
+    const refreshTokenExpires = (now + (config.jwtRefreshExpiration * 1000));
     const refreshToken = await JwtHelper.getToken(refreshTokenExpires, userId);
 
     await this.saveTokenService({
       token: refreshToken,
       user: userId,
-      expires: new Date(refreshTokenExpires * 1000), // milliseconds
+      expires: new Date(refreshTokenExpires),
       type: "refresh",
       blacklisted: false,
     });
     return {
       access: {
         token: accessToken,
-        expires: new Date(accessTokenExpires * 1000), // milliseconds,
+        expires: new Date(accessTokenExpires),
       },
       refresh: {
         token: refreshToken,
-        expires: new Date(refreshTokenExpires * 1000), // milliseconds,
+        expires: new Date(refreshTokenExpires),
       },
     };
   }
@@ -132,7 +135,7 @@ class TokenService {
       });
     }
     const deleteCount: number = await Token.deleteOne(
-      { _id: new ObjectId(id) },
+      { _id: new Bson.ObjectId(id) },
     );
     if (!deleteCount) {
       return throwError({

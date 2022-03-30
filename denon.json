@@ -4,41 +4,37 @@
     "net",
     "env",
     "read",
-    "write",
-    "plugin"
+    "write"
   ],
   "scripts": {
     "start": {
       "cmd": "deno run app.ts",
-      "unstable": true,
+      "unstable": false,
       "desc": "run server",
       "env": {
         "ENV": "development"
       },
       "watch": true,
-      "tsconfig": "tsconfig.json",
-      "lock": "lock.json"
+      "tsconfig": "tsconfig.json"
     },
     "test": {
       "cmd": "deno test",
       "desc": "Test the server.",
-      "unstable": true,
+      "unstable": false,
       "env": {
         "ENV": "test"
       },
       "watch": false,
-      "tsconfig": "tsconfig.json",
-      "lock": "lock.json"
+      "tsconfig": "tsconfig.json"
     },
     "prod": {
       "cmd": "deno run app.bundle.js",
       "desc": "Run the server.",
-      "unstable": true,
+      "unstable": false,
       "env": {
         "ENV": "production"
       },
-      "watch": false,
-      "lock": "lock.json"
+      "watch": false
     },
     "fmt": {
       "cmd": "deno fmt",
@@ -61,22 +57,14 @@
   },
   "watcher": {
     "interval": 350,
-    "exts": [
-      "js",
-      "jsx",
-      "ts",
-      "tsx",
-      "json"
-    ],
-    "match": [
-      "*.*"
-    ],
+    "exts": ["js", "jsx", "ts", "tsx", "json"],
+    "match": ["**/*.*"],
     "skip": [
       "*/.git/*",
       "*/.idea/*",
       "*/.vscode/*",
       "*/.env/*"
     ],
-    "legacy": true
+    "legacy": false
   }
 }
