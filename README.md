@@ -1,8 +1,5 @@
 # Deno REST - A Boilerplate for deno RESTful apis
 
-[![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/oak/mod.ts)
-[![Custom badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fdeno-visualizer.danopia.net%2Fshields%2Flatest-version%2Fx%2Foak%2Fmod.ts)](https://doc.deno.land/https/deno.land/x/oak/mod.ts)
-
 <img src="https://deno.land/images/deno_logo_4.gif" alt="logo" width="300"/>
 
 This is a simple Boilerplate project to create Deno RESTful APIs using [Oak](https://deno.land/x/oak) and
