@@ -1,9 +1,12 @@
 # Deno REST - A Boilerplate for deno RESTful apis
 
+[![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/oak/mod.ts)
+[![Custom badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fdeno-visualizer.danopia.net%2Fshields%2Flatest-version%2Fx%2Foak%2Fmod.ts)](https://doc.deno.land/https/deno.land/x/oak/mod.ts)
+
 <img src="https://deno.land/images/deno_logo_4.gif" alt="logo" width="300"/>
 
-This is a Boilerplate project to create Deno RESTful API using oak and
-deno_mongo
+This is a simple Boilerplate project to create Deno RESTful APIs using [Oak](https://deno.land/x/oak) and
+[deno_mongo](https://deno.land/x/mongo)
 
 ### Features
 
@@ -17,7 +20,8 @@ deno_mongo
 - Error Handling
 - Database seeding
 - User Roles and Rights
-- Password Encryption using AES
+- User History
+- Password Hashing using BCrypt
 - Denon Integration
 
 ### Libraries Used
@@ -30,8 +34,7 @@ deno_mongo
       on JWT and JWS specifications.
 - [x] [yup](https://github.com/jquense/yup) - Schema builder for value parsing
       and validation
-- [x] [bcrypt](https://deno.land/x/bcrypt) - Encrypts passwords to save in
-      database collection.
+- [x] [bcrypt](https://deno.land/x/bcrypt) - OpenBSD Blowfish password hashing algorithm
 
 ## Getting Started
 
@@ -65,11 +68,11 @@ git clone https://github.com/vicky-gonsalves/deno_rest.git
 
 ```
 .
-├── .env/
+├── .environments/
 │   ├── .env.example
-│   ├── .env.development  	        // git ignored
-│   ├── .env.production		        // git ignored
-│   └── .env.test                       // git ignored
+│   ├── .env.development      // git ignored
+│   ├── .env.production       // git ignored
+│   └── .env.test             // git ignored
 ├── config/
 │   ├── config.ts
 │   └── roles.ts
@@ -122,7 +125,7 @@ git clone https://github.com/vicky-gonsalves/deno_rest.git
 
 ### Set environments
 
-Review `.env/.env.example` file and create required `.env` file suitable to your
+Review `.environments/.env.example` file and create required `.env` file suitable to your
 needs. For example: for development environment create a file `.env.development`
 under `.env` directory for test environment create a file `.env.test` under
 `.env` directory and add necessary variables.
@@ -210,10 +213,10 @@ All routes are stored under `routers` directory Below is the example of
 ...
 /** JWT protected route */
 router.post(
-  "/api/users",  						    // route
-  auth("manageUsers"),  				            // Auth Guard based on djwt
-  validate(createUserValidation),  		                    // Yup based validation
-  UserController.create,  				            // Controller Function
+  "/api/users",  				          // route
+  auth("manageUsers"),  	              // Auth Guard based on djwt
+  validate(createUserValidation),         // Yup based validation
+  UserController.create,  		          // Controller Function
 );
 ...
 ...
@@ -237,11 +240,12 @@ All models are under `models` directory example of User Model:
 import db from "../db/db.ts";
 
 export interface UserSchema {
-  _id?: string;
+  _id: string;
   name: string;
   email: string;
   password: string;
   role: string;
+  docVersion: number;
   isDisabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -257,30 +261,32 @@ Controllers are saved under `controllers` directory Example of User Controller:
 ```
 ...
 class UserController {
-/**
- * Create User function * @param request
- * @param response
- * @returns Promise<void>
- */public static async create(
-  { request, response }: RouterContext,
-): Promise<void> {
-  const body = request.body();
-  let {
-    name,
-    email,
-    password,
-    role,
-    isDisabled,
-  } = await body.value;
-  log.debug("Creating user");
-  response.body = await UserService.createUser({
-    name,
-    email,
-    password,
-    role: role || roles[0],
-    isDisabled: typeof isDisabled === "boolean" ? isDisabled : false,
-  });
-}
+ /**
+   * Create User function
+   * @param request
+   * @param response
+   * @returns Promise<void>
+   */
+  public static async create(
+    { request, response }: RouterContext<string>,
+  ): Promise<void> {
+    const body = request.body();
+    const {
+      name,
+      email,
+      password,
+      role,
+      isDisabled,
+    } = await body.value;
+    log.debug("Creating user");
+    response.body = await UserService.createUser({
+      name,
+      email,
+      password,
+      role: role || roles[0],
+      isDisabled: typeof isDisabled === "boolean" ? isDisabled : false,
+    });
+  }
 ...
 ...
 ```
@@ -291,19 +297,44 @@ All Services are under `services` directory Example of User service:
 
 ```
 class UserService {
-  /**
- * Create user Service * @param options
- * @returns Promise<ObjectId | Error> Returns Mongo Id of user document
- */  public static async createUser(
+ /**
+   * Create user Service
+   * @param options
+   * @returns Promise<string | Bson.ObjectId | Error> Returns Mongo Document of user or error
+   */
+  public static async createUser(
     options: CreateUserStructure,
-  ): Promise<ObjectId | Error> {
+  ): Promise<string | Bson.ObjectId | Error> {
     const { name, email, password, role, isDisabled } = options;
     const hashedPassword = await HashHelper.encrypt(password);
     const createdAt = new Date();
-    const user: ObjectId = await User.insertOne(
-      { name, email, password: hashedPassword, role, isDisabled, createdAt },
+
+    const user: string | Bson.ObjectId = await User.insertOne(
+      {
+        name,
+        email,
+        password: hashedPassword,
+        role,
+        isDisabled,
+        createdAt,
+        docVersion: 1,
+      },
     );
-    if (!user) {
+
+    if (user) {
+      await UserHistory.insertOne(
+        {
+          user: user as string,
+          name,
+          email,
+          password: hashedPassword,
+          role,
+          isDisabled,
+          createdAt,
+          docVersion: 1,
+        },
+      );
+    } else {
       log.error("Could not create user");
       return throwError({
         status: Status.BadRequest,
