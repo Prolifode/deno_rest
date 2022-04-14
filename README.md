@@ -2,8 +2,8 @@
 
 <img src="https://deno.land/images/deno_logo_4.gif" alt="logo" width="300"/>
 
-This is a simple Boilerplate project to create Deno RESTful APIs using [Oak](https://deno.land/x/oak) and
-[deno_mongo](https://deno.land/x/mongo)
+This is a simple Boilerplate project to create Deno RESTful APIs using
+[Oak](https://deno.land/x/oak) and [deno_mongo](https://deno.land/x/mongo)
 
 ### Features
 
@@ -31,7 +31,8 @@ This is a simple Boilerplate project to create Deno RESTful APIs using [Oak](htt
       on JWT and JWS specifications.
 - [x] [yup](https://github.com/jquense/yup) - Schema builder for value parsing
       and validation
-- [x] [bcrypt](https://deno.land/x/bcrypt) - OpenBSD Blowfish password hashing algorithm
+- [x] [bcrypt](https://deno.land/x/bcrypt) - OpenBSD Blowfish password hashing
+      algorithm
 
 ## Getting Started
 
@@ -40,19 +41,19 @@ This is a simple Boilerplate project to create Deno RESTful APIs using [Oak](htt
 **Using Deno:**
 
 ```
-deno upgrade --version 1.20.3
+deno upgrade --version 1.20.5
 ```
 
 **With Shell:**
 
 ```
-curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.20.3
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.20.5
 ```
 
 **With PowerShell:**
 
 ```
-$v="1.20.3"; iwr https://deno.land/x/install/install.ps1 -useb | iex
+$v="1.20.5"; iwr https://deno.land/x/install/install.ps1 -useb | iex
 ```
 
 Clone this repository to your local machine
@@ -122,10 +123,10 @@ git clone https://github.com/vicky-gonsalves/deno_rest.git
 
 ### Set environments
 
-Review `.environments/.env.example` file and create required `.env` file suitable to your
-needs. For example: for development environment create a file `.env.development`
-under `.env` directory for test environment create a file `.env.test` under
-`.env` directory and add necessary variables.
+Review `.environments/.env.example` file and create required `.env` file
+suitable to your needs. For example: for development environment create a file
+`.env.development` under `.environments` directory for test environment create a
+file `.env.test` under `.environments` directory and add necessary variables.
 
 ### Install denon
 
