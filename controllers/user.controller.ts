@@ -2,6 +2,7 @@ import { roles } from "../config/roles.ts";
 import type { RouterContext } from "../deps.ts";
 import log from "../middlewares/logger.middleware.ts";
 import UserService from "../services/user.service.ts";
+import { Status } from "../deps.ts";
 
 class UserController {
   /**
@@ -29,6 +30,7 @@ class UserController {
       role: role || roles[0],
       isDisabled: typeof isDisabled === "boolean" ? isDisabled : false,
     });
+    response.status = Status.Created;
   }
 
   /**

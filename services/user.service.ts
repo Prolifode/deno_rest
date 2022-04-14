@@ -24,6 +24,18 @@ class UserService {
     options: CreateUserStructure,
   ): Promise<string | Bson.ObjectId | Error> {
     const { name, email, password, role, isDisabled } = options;
+    const userExists: (UserSchema | undefined) = await User.findOne({ email });
+    if (userExists) {
+      log.error("User already exists");
+      return throwError({
+        status: Status.Conflict,
+        name: "Conflict",
+        path: "user",
+        param: "user",
+        message: `User already exists`,
+        type: "Conflict",
+      });
+    }
     const hashedPassword = await HashHelper.encrypt(password);
     const createdAt = new Date();
 

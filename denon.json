@@ -27,6 +27,16 @@
       "watch": false,
       "tsconfig": "tsconfig.json"
     },
+    "test:cov": {
+      "cmd": "deno test --coverage=./cov",
+      "desc": "Test Coverage",
+      "unstable": false,
+      "env": {
+        "ENV": "test"
+      },
+      "watch": false,
+      "tsconfig": "tsconfig.json"
+    },
     "prod": {
       "cmd": "deno run app.bundle.js",
       "desc": "Run the server.",

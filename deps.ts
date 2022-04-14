@@ -18,4 +18,5 @@ export type { Document } from "https://deno.land/x/mongo/mod.ts";
 export { oakCors } from "https://deno.land/x/cors/mod.ts";
 export type { Header, Payload } from "https://deno.land/x/djwt/mod.ts";
 export { create, decode, verify } from "https://deno.land/x/djwt/mod.ts";
+export { superoak } from "https://deno.land/x/superoak/mod.ts";
 export { yup };
