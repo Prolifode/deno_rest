@@ -20,6 +20,7 @@ export type { Header, Payload } from "https://deno.land/x/djwt/mod.ts";
 export { create, decode, verify } from "https://deno.land/x/djwt/mod.ts";
 export { superoak } from "https://deno.land/x/superoak/mod.ts";
 export {
+  afterAll,
   afterEach,
   beforeEach,
   describe,
