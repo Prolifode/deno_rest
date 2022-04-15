@@ -1,21 +1,21 @@
 import {
+  afterAll,
   beforeEach,
   Bson,
   describe,
   expect,
   it,
   superoak,
-} from "../../deps.ts";
-import { app } from "../../app.ts";
+} from "../../../deps.ts";
+import { app } from "../../../app.ts";
 import {
   clearCollection,
   createUser,
   generateAccessToken,
-} from "../utils/utils.ts";
-import { User } from "../../models/user.model.ts";
-import { afterAll } from "https://deno.land/std@0.135.0/testing/bdd.ts";
-import { admin, user, user2 } from "../fixtures/users.fixtures.ts";
-import { roles } from "../../config/roles.ts";
+} from "../../utils/utils.ts";
+import { User } from "../../../models/user.model.ts";
+import { admin, user, user2 } from "../../fixtures/users.fixtures.ts";
+import { roles } from "../../../config/roles.ts";
 
 describe("Users endpoints", () => {
   beforeEach(async () => {
