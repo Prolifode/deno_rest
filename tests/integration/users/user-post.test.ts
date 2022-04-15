@@ -17,7 +17,7 @@ import { User } from "../../../models/user.model.ts";
 import { admin, user, user2 } from "../../fixtures/users.fixtures.ts";
 import { roles } from "../../../config/roles.ts";
 
-describe("Users endpoints", () => {
+describe("Users endpoints POST", () => {
   beforeEach(async () => {
     await clearCollection("users");
   });
@@ -26,7 +26,7 @@ describe("Users endpoints", () => {
     await clearCollection("users");
   });
 
-  describe("Create Users endpoints: POST users/", () => {
+  describe("POST users/", () => {
     it("should create user", async () => {
       const userId = await createUser(admin);
       const token = await generateAccessToken(userId);
