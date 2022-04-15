@@ -41,19 +41,19 @@ This is a simple Boilerplate project to create Deno RESTful APIs using
 **Using Deno:**
 
 ```
-deno upgrade --version 1.20.5
+deno upgrade --version 1.20.6
 ```
 
 **With Shell:**
 
 ```
-curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.20.5
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.20.6
 ```
 
 **With PowerShell:**
 
 ```
-$v="1.20.5"; iwr https://deno.land/x/install/install.ps1 -useb | iex
+$v="1.20.6"; iwr https://deno.land/x/install/install.ps1 -useb | iex
 ```
 
 Clone this repository to your local machine
