@@ -19,4 +19,11 @@ export { oakCors } from "https://deno.land/x/cors/mod.ts";
 export type { Header, Payload } from "https://deno.land/x/djwt/mod.ts";
 export { create, decode, verify } from "https://deno.land/x/djwt/mod.ts";
 export { superoak } from "https://deno.land/x/superoak/mod.ts";
+export {
+  afterEach,
+  beforeEach,
+  describe,
+  it,
+} from "https://deno.land/std/testing/bdd.ts";
+export { expect } from "https://deno.land/x/expect/mod.ts";
 export { yup };

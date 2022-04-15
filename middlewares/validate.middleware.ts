@@ -21,7 +21,7 @@ const checkInvalidParams = (fields: any, payload: any): void => {
         path: param,
         param,
         message: `${param} is not allowed`,
-        type: "forbidden",
+        type: "BadRequest",
       });
     }
   }
@@ -47,7 +47,7 @@ const checkValidation = async (
   try {
     await schema.validate(payload, { stripUnknown: true, abortEarly: true });
   } catch (validationErrors) {
-    throw ({ ...validationErrors, status: 400 });
+    throw ({ ...validationErrors, status: Status.BadRequest });
   }
 };
 
@@ -86,12 +86,12 @@ export const validate = (schema: any) =>
         (!_q._schema || _q._schema && !_q._schema.has("fields"))
       ) {
         throwError({
-          status: 400,
+          status: Status.BadRequest,
           name: "ValidationError",
           path: _q.type,
           param: _q.type,
           message: `${_q.type} is not allowed`,
-          type: "forbidden",
+          type: "BadRequest",
         });
       }
     }

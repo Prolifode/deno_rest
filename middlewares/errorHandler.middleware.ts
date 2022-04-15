@@ -1,7 +1,5 @@
-import configs from "../config/config.ts";
-import { Context, isHttpError, State, Status } from "../deps.ts";
+import { Context, State, Status } from "../deps.ts";
 import type { Err } from "../types/types.interface.ts";
-import log from "./logger.middleware.ts";
 
 /**
  * Throws Error with provided params
@@ -26,22 +24,8 @@ export const errorHandler = async (
   try {
     await next();
   } catch (err) {
-    let message = err.message;
-    const name = err.name;
-    const path = err.path;
-    const type = err.type;
+    const { message, name, path, type } = err;
     const status = err.status || err.statusCode || Status.InternalServerError;
-
-    const { env } = configs;
-    if (!isHttpError(err)) {
-      message = env === "dev" || env === "development"
-        ? message
-        : "Internal Server Error";
-    }
-
-    if (env === "dev" || env === "development") {
-      log.debug(err);
-    }
 
     ctx.response.status = status;
     ctx.response.body = { message, name, path, type, status };
