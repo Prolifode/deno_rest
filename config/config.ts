@@ -6,16 +6,6 @@ const envConfig = dotEnv({
   path: envPath,
 });
 
-let mongoUrl = `mongodb://${envConfig.DB_USER}:${
-  encodeURIComponent(envConfig.DB_PASS)
-}@${envConfig.DB_HOST}/${envConfig.DB_NAME}`;
-
-if (env === "development" || env === "test") {
-  if (envConfig.DB_USER === "" && envConfig.DB_PASS === "") {
-    mongoUrl = `mongodb://${envConfig.DB_HOST}/${envConfig.DB_NAME}`;
-  }
-}
-
 /**
  * Configuration
  */
@@ -45,7 +35,7 @@ const config: ({
   host: envConfig.HOST,
   port: Number(envConfig.PORT),
   protocol: envConfig.PROTOCOL,
-  mongoUrl,
+  mongoUrl: envConfig.MONGO_URI,
   dbName: envConfig.DB_NAME,
   seed: Boolean(envConfig.SEED === "true"),
   clientHost: envConfig.CLIENT_HOST,

@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  deno-rest:
+    build: .
+    image: deno-rest
+    ports:
+      - '9000:9000'
+    depends_on:
+      - db
+    restart: on-failure
+    container_name: 'deno-rest'
+    networks:
+      - network
+    logging:
+      options:
+        max-size: "5k"
+  db:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    container_name: 'mongo_db_server'
+    volumes:
+      - ~/mongo/data:/data/db
+    networks:
+      - network
+    logging:
+      options:
+        max-size: "5k"
+
+networks:
+  network:
+    driver: bridge
