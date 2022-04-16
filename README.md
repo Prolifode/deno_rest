@@ -2,6 +2,8 @@
 
 <img src="https://deno.land/images/deno_logo_4.gif" alt="logo" width="300"/>
 
+[![CircleCI](https://circleci.com/gh/vicky-gonsalves/deno_rest/tree/master.svg?style=svg)](https://circleci.com/gh/vicky-gonsalves/deno_rest/tree/master)
+
 This is a simple Boilerplate project to create Deno RESTful APIs using
 [Oak](https://deno.land/x/oak) and [deno_mongo](https://deno.land/x/mongo)
 
@@ -394,6 +396,7 @@ deno cache --lock=lock.json --lock-write --unstable ./deps.ts
 ```
 
 **OR** simply run `lock_update.sh` file
+
 
 
 ## Known Issues
