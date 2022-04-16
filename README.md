@@ -20,6 +20,9 @@ This is a simple Boilerplate project to create Deno RESTful APIs using
 - User History
 - Password Hashing using BCrypt
 - Denon Integration
+- Integration tests
+- Docker Integration
+- CircleCI Integration
 
 ### Libraries Used
 
@@ -65,58 +68,90 @@ git clone https://github.com/vicky-gonsalves/deno_rest.git
 **Directory Structure**
 
 ```
-.
-├── .environments/
-│   ├── .env.example
-│   ├── .env.development      // git ignored
-│   ├── .env.production       // git ignored
-│   └── .env.test             // git ignored
-├── config/
-│   ├── config.ts
-│   └── roles.ts
-├── controllers/
-│   ├── auth.controller.ts
-│   └── user.controller.ts
-├── data/
-│   └── users.json
-├── db/
-│   └── db.ts
-├── helpers/
-│   ├── hash.helper.ts
-│   └── jwt.helper.ts
-├── middlewares/
-│   ├── auth.middleware.ts
-│   ├── errorHandler.middleware.ts
-│   ├── logger.middleware.ts
-│   └── validate.middleware.ts
-├── models/
-│   ├── token.model.ts
-│   └── user.model.ts
-├── routers/
-│   ├── auth.router.ts
-│   ├── default.router.ts
-│   ├── index.ts
-│   └── user.router.ts
-├── services/
-│   ├── auth.service.ts
-│   ├── token.service.ts
-│   └── user.service.ts
-├── types/
-│   └── types.interface.ts
-├── validations/
-│   ├── auth.validation.ts
-│   └── user.validation.ts
-├── .gitignore
-├── app.ts
-├── denon.json
-├── deps.ts
-├── lock.json
-├── LICENSE
-├── lock_update.sh
-├── README.md
-├── reload_deps.sh
-├── seed.ts
-└── tsconfig.json
+|   .gitignore
+|   app.ts
+|   denon.json
+|   deps.ts
+|   docker-compose.dev.yml
+|   docker-compose.test.yml
+|   docker-compose.yml
+|   Dockerfile
+|   LICENSE
+|   lock.json
+|   lock_update.sh
+|   README.md
+|   reload_deps.sh
+|   run_tests.sh
+|   seed.ts
+|   tsconfig.json
++---.circleci
+|       config.yml
+|
++---config
+|       config.ts
+|       roles.ts
+|
++---controllers
+|       auth.controller.ts
+|       user.controller.ts
+|
++---data
+|       users.json
+|
++---db
+|       db.ts
+|
++---environments
+|       .env.development
+|       .env.example
+|       .env.test
+|
++---helpers
+|       hash.helper.ts
+|       jwt.helper.ts
+|
++---middlewares
+|       auth.middleware.ts
+|       errorHandler.middleware.ts
+|       logger.middleware.ts
+|       validate.middleware.ts
+|
++---models
+|       token.model.ts
+|       user.model.ts
+|       user_history.model.ts
+|
++---routers
+|       auth.router.ts
+|       default.router.ts
+|       index.ts
+|       user.router.ts
+|
++---services
+|       auth.service.ts
+|       token.service.ts
+|       user.service.ts
+|
++---tests
+|   +---fixtures
+|   |       users.fixtures.ts
+|   |
+|   +---integration
+|   |   |   app.test.ts
+|   |   |
+|   |   \---users
+|   |           user-get.test.ts
+|   |           user-post.test.ts
+|   |
+|   \---utils
+|           utils.ts
+|
++---types
+|       types.interface.ts
+|
+\---validations
+|       auth.validation.ts
+|       user.validation.ts
 ```
 
 ## Setup
@@ -360,12 +395,6 @@ deno cache --lock=lock.json --lock-write --unstable ./deps.ts
 
 **OR** simply run `lock_update.sh` file
 
-## TODO
-
--- We are awaiting for a reliable mock library for mongoDB to perform tests.
-
-- [ ] Tests
-- [ ] Docker integration
 
 ## Known Issues
 
