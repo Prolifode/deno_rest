@@ -27,6 +27,11 @@
       "watch": false,
       "tsconfig": "tsconfig.json"
     },
+    "test:docker": {
+      "cmd": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --exit-code-from deno-rest --abort-on-container-exit",
+      "desc": "Test the server in docker container",
+      "watch": false
+    },
     "test:cov": {
       "cmd": "deno test --coverage=./cov",
       "desc": "Test Coverage",
