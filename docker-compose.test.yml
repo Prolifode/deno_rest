@@ -3,4 +3,6 @@ version: '3'
 services:
   deno-rest:
     container_name: deno-rest-test
+    environment:
+      MONGO_URI: mongodb://mongo:27017/deno-rest-test
     command: denon test
