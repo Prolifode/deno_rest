@@ -1,42 +1,15 @@
 version: 2.1
 
 jobs:
-  start-mongodb:
-    docker:
-      - image: circleci/node:12-browsers
-      - image: circleci/mongo:5.0
-        environment:
-          MONGO_USERNAME: mongouser
-          MONGO_PASSWORD: mongopass
-    steps:
-      - run:
-          name: MongoDB Install
-          command: |
-            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
-            echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
-            sudo apt-get update
-            sudo apt-get install -y mongodb-org-shell
-      - setup_remote_docker
-      - run:
-          name: Waiting for Mongo
-          command: dockerize -wait tcp://localhost:27017 -timeout 1m
-      - checkout
-      - run:
-          name: Get versions
-          command: |
-            node -v
-            npm -v
-            mongo -v
-            mongo localhost --eval "db.version()"
-  build-and-test:
-    docker:
-      - image: denoland/deno:1.20.6
+  test:
+    machine: true
+    working_directory: ~/repo
     steps:
       - checkout
-      - run: |
-          deno test --allow-net --allow-env --allow-read --allow-write
-
+      - run:
+          name: Integration Tests
+          command: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --exit-code-from deno-rest --abort-on-container-exit
 workflows:
   sample:
     jobs:
-      - build-and-test
+      - test
