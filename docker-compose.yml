@@ -5,7 +5,7 @@ services:
     build: .
     image: deno-rest
     environment:
-      MONGO_URI: mongodb://mongo:27017/deno-rest-test
+      MONGO_URI: $MONGO_URI
       APP_NAME: Deno REST - Boilerplate for deno RESTful apis
       JWT_ACCESS_TOKEN_EXP: 3600
       JWT_REFRESH_TOKEN_EXP: 1800
