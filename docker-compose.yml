@@ -9,12 +9,12 @@ services:
       APP_NAME: Deno REST - Boilerplate for deno RESTful apis
       JWT_ACCESS_TOKEN_EXP: 3600
       JWT_REFRESH_TOKEN_EXP: 1800
-      SEED: false
+      SEED: 'false'
       IP: 0.0.0.0
       HOST: localhost
       PORT: 9000
       PROTOCOL: http
-      DB_HOST: 127.0.0.1:27017
+      DB_HOST: mongo:27017
       DB_NAME: deno_rest_test
       CLIENT_PROTOCOL: http
       CLIENT_HOST: localhost
