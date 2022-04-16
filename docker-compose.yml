@@ -5,7 +5,7 @@ services:
     build: .
     image: deno-rest
     environment:
-      MONGO_URI: $MONGO_URI
+      MONGO_URI: mongodb://mongo:27017/deno-rest-test
     ports:
       - '9000:9000'
     depends_on:
