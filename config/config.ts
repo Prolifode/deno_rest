@@ -1,9 +1,11 @@
-import { dotEnv } from "../deps.ts";
+import { configSync } from "../deps.ts";
 
 const env: string = Deno.env.get("ENV") || "development";
 const envPath: string = `environments/.env.${env}`.toString();
-const envConfig = dotEnv({
+
+configSync({
   path: envPath,
+  export: true,
 });
 
 /**
@@ -28,22 +30,30 @@ const config: ({
   clientUrl: string;
 }) = {
   env,
-  appName: envConfig.APP_NAME,
-  jwtAccessExpiration: Number(envConfig.JWT_ACCESS_TOKEN_EXP),
-  jwtRefreshExpiration: Number(envConfig.JWT_REFRESH_TOKEN_EXP),
-  ip: envConfig.IP,
-  host: envConfig.HOST,
-  port: Number(envConfig.PORT),
-  protocol: envConfig.PROTOCOL,
-  mongoUrl: envConfig.MONGO_URI,
-  dbName: envConfig.DB_NAME,
-  seed: Boolean(envConfig.SEED === "true"),
-  clientHost: envConfig.CLIENT_HOST,
-  clientPort: Number(envConfig.CLIENT_PORT),
-  clientProtocol: envConfig.CLIENT_PROTOCOL,
-  url: `${envConfig.PROTOCOL}://${envConfig.HOST}:${envConfig.PORT}`,
-  clientUrl:
-    `${envConfig.CLIENT_PROTOCOL}://${envConfig.CLIENT_HOST}:${envConfig.CLIENT_PORT}`,
+  appName: Deno.env.get("APP_NAME") as unknown as string,
+  jwtAccessExpiration: Number(
+    Deno.env.get("JWT_ACCESS_TOKEN_EXP"),
+  ) as unknown as number,
+  jwtRefreshExpiration: Number(
+    Deno.env.get("JWT_REFRESH_TOKEN_EXP"),
+  ) as unknown as number,
+  ip: Deno.env.get("IP") as unknown as string,
+  host: Deno.env.get("HOST") as unknown as string,
+  port: Number(Deno.env.get("PORT") as unknown as number),
+  protocol: Deno.env.get("PROTOCOL") as unknown as string,
+  mongoUrl: Deno.env.get("MONGO_URI") as unknown as string,
+  dbName: Deno.env.get("DB_NAME") as unknown as string,
+  seed: Boolean(Deno.env.get("SEED") === "true"),
+  clientHost: Deno.env.get("CLIENT_HOST") as unknown as string,
+  clientPort: Number(Deno.env.get("CLIENT_PORT") as unknown as number),
+  clientProtocol: Deno.env.get("CLIENT_PROTOCOL") as unknown as string,
+  url: `${Deno.env.get("PROTOCOL") as unknown as string}://${Deno.env.get(
+    "HOST",
+  ) as unknown as string}:${Deno.env.get("PORT") as unknown as number}`,
+  clientUrl: `${Deno.env.get("CLIENT_PROTOCOL") as unknown as string}://${Deno
+    .env.get("CLIENT_HOST") as unknown as string}:${Deno.env.get(
+      "CLIENT_PORT",
+    ) as unknown as number}`,
 };
 
 export default config;
