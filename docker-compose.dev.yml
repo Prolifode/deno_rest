@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  deno-rest:
+    container_name: deno-rest-test
+    environment:
+      MONGO_URI: mongodb://mongo:27017/deno_rest
+    command: denon start
