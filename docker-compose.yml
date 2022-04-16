@@ -22,7 +22,7 @@ services:
     ports:
       - '9000:9000'
     depends_on:
-      - db
+      - mongo
     restart: on-failure
     container_name: 'deno-rest'
     networks:
@@ -30,7 +30,7 @@ services:
     logging:
       options:
         max-size: "5k"
-  db:
+  mongo:
     image: mongo:latest
     restart: always
     ports:
