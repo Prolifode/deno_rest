@@ -17,6 +17,16 @@
       "watch": true,
       "tsconfig": "tsconfig.json"
     },
+    "start:docker": {
+      "cmd": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
+      "unstable": false,
+      "desc": "run server",
+      "env": {
+        "ENV": "development"
+      },
+      "watch": true,
+      "tsconfig": "tsconfig.json"
+    },
     "test": {
       "cmd": "deno test",
       "desc": "Test the server.",
