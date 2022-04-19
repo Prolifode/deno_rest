@@ -75,20 +75,23 @@ class UserController {
    * @param params
    * @param request
    * @param response
+   * @param state
    * @returns Promise<void>
    */
   public static async update(
-    { params, request, response }: RouterContext<string>,
-  ): Promise<void> {
+    { params, request, response, state }: RouterContext<string>,
+  ): Promise<void | Error> {
     const { id } = params;
     const body = request.body();
-    const { name, role, isDisabled } = await body.value;
+    const { name, email, role, isDisabled } = await body.value;
     log.debug("Updating user");
-    response.body = await UserService.updateUser(id as string, {
+    await UserService.updateUser(id as string, state, {
       name,
+      email,
       role,
       isDisabled,
     });
+    response.body = await UserService.getUser(id as string);
   }
 
   /**

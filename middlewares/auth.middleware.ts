@@ -1,10 +1,10 @@
 import { roleRights } from "../config/roles.ts";
-import { Context, State, Status } from "../deps.ts";
+import { Status } from "../deps.ts";
+import type { RouterContext } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import UserService from "../services/user.service.ts";
 import type { UserStructure } from "../types/types.interface.ts";
 import { throwError } from "./errorHandler.middleware.ts";
-
 /**
  * Check user Rights
  * @param requiredRights
@@ -17,7 +17,7 @@ const checkRights = (
 ): boolean | Error => {
   if (requiredRights.length) {
     const userRights = roleRights.get(user.role);
-    const hasRequiredRights = requiredRights.every((requiredRight) =>
+    const hasRequiredRights = requiredRights.some((requiredRight) =>
       userRights.includes(requiredRight)
     );
     if (!hasRequiredRights) {
@@ -39,10 +39,9 @@ const checkRights = (
  * @param requiredRights
  * @returns Promise<void>
  */
-export const auth = (...requiredRights: string[]) =>
+export const auth = (requiredRights: string[]) =>
   async (
-    // deno-lint-ignore no-explicit-any
-    ctx: Context<State, Record<string, any>>,
+    ctx: RouterContext<string>,
     next: () => Promise<unknown>,
   ): Promise<void> => {
     let JWT: string;

@@ -397,8 +397,6 @@ deno cache --lock=lock.json --lock-write --unstable ./deps.ts
 
 **OR** simply run `lock_update.sh` file
 
-
-
 ## Known Issues
 
 - Denon does not automatically restarts

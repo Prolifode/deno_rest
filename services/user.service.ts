@@ -13,6 +13,7 @@ import type {
   UpdateUserStructure,
   UserStructure,
 } from "../types/types.interface.ts";
+import { roleRights, roles } from "../config/roles.ts";
 
 class UserService {
   /**
@@ -113,11 +114,13 @@ class UserService {
   /**
    * Update user service
    * @param id
+   * @param state
    * @param options
    * @returns Promise<UpdatedStructure | Error> Returns Updated acknowledgement
    */
   public static async updateUser(
     id: string,
+    state: Record<string, string>,
     options: UpdateUserStructure,
   ): Promise<UpdatedStructure | Error> {
     const user: (UserSchema | undefined) = await User.findOne(
@@ -134,9 +137,51 @@ class UserService {
         type: "NotFound",
       });
     }
+    const { isDisabled, name, email, role } = options;
+    const userRights: string[] = roleRights.get(state.role);
+    if (state.id !== id && !userRights.includes("manageUsers")) {
+      return throwError({
+        status: Status.Forbidden,
+        name: "Forbidden",
+        path: `access_token`,
+        param: `access_token`,
+        message: `Insufficient rights`,
+        type: "Forbidden",
+      });
+    }
+    const roleTobeChanged = roles.indexOf(role as string);
+    if (
+      (roleTobeChanged > roles.indexOf(user.role)) &&
+      (roles.indexOf(state.role) < roleTobeChanged)
+    ) {
+      return throwError({
+        status: Status.Forbidden,
+        name: "Forbidden",
+        path: `access_token`,
+        param: `access_token`,
+        message: `Cannot change role to higher`,
+        type: "Forbidden",
+      });
+    }
+    if (email) {
+      const userExists: (UserSchema | undefined) = await User.findOne({
+        email,
+        _id: { $ne: id },
+      });
+      if (userExists) {
+        log.error("User already exists");
+        return throwError({
+          status: Status.Conflict,
+          name: "Conflict",
+          path: "user",
+          param: "user",
+          message: `User already exists`,
+          type: "Conflict",
+        });
+      }
+    }
     const { docVersion } = user;
     const newDocVersion = docVersion + 1;
-    const { isDisabled, name, role } = options;
     const updatedAt = new Date();
     const result: ({
       // deno-lint-ignore no-explicit-any
@@ -147,6 +192,7 @@ class UserService {
     }) = await User.updateOne({ _id: new Bson.ObjectId(id) }, {
       $set: {
         name,
+        email,
         role,
         isDisabled,
         updatedAt,
@@ -161,6 +207,9 @@ class UserService {
       };
       if (name) {
         user.name = name;
+      }
+      if (email) {
+        user.email = email;
       }
       if (role) {
         user.role = role;

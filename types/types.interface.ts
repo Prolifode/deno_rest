@@ -30,6 +30,7 @@ export interface CreateUserStructure {
 
 export interface UpdateUserStructure {
   name?: string;
+  email?: string;
   role?: string;
   isDisabled?: boolean;
 }

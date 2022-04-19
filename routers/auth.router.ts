@@ -6,7 +6,8 @@ import {
   refreshTokenValidation,
 } from "../validations/auth.validation.ts";
 
-const router: Router = new Router();
+// deno-lint-ignore no-explicit-any
+const router: any = new Router();
 
 router.post(
   "/api/auth/login",
