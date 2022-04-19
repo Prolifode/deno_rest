@@ -59,8 +59,14 @@ export const updateUserValidation = {
       .min(1)
       .max(255)
       .trim(),
+    email: yup
+      .string()
+      .email()
+      .trim(),
     role: yup
-      .string(),
+      .string()
+      .default("user")
+      .oneOf(roles),
     isDisabled: yup
       .bool(),
   }),

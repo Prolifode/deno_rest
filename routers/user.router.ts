@@ -16,42 +16,42 @@ const router: any = new Router();
 
 router.post(
   "/api/users",
-  auth("manageUsers"),
+  auth(["manageUsers"]),
   validate(createUserValidation),
   UserController.create,
 );
 
 router.get(
   "/api/users",
-  auth("getUsers"),
+  auth(["getUsers"]),
   validate(getUsersValidation),
   UserController.fetch,
 );
 
 router.get(
   "/api/me",
-  auth("getMe"),
+  auth(["getMe"]),
   validate(meValidation),
   UserController.me,
 );
 
 router.get(
   "/api/users/:id",
-  auth("getUsers"),
+  auth(["getUsers"]),
   validate(getUserValidation),
   UserController.show,
 );
 
 router.put(
   "/api/users/:id",
-  auth("manageUsers"),
+  auth(["manageUsers", "updateMe"]),
   validate(updateUserValidation),
   UserController.update,
 );
 
 router.delete(
   "/api/users/:id",
-  auth("manageUsers"),
+  auth(["manageUsers"]),
   validate(deleteUserValidation),
   UserController.remove,
 );

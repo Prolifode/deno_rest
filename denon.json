@@ -28,7 +28,7 @@
       "tsconfig": "tsconfig.json"
     },
     "test": {
-      "cmd": "deno test",
+      "cmd": "deno test tests/integration/users/user-put.test.ts",
       "desc": "Test the server.",
       "unstable": false,
       "env": {
