@@ -17,7 +17,7 @@ class JwtHelper {
    */
   public static getToken(
     exp: number,
-    id?: string,
+    id: string,
   ): Promise<string> {
     const now = Date.now(); // in millis
     const header: Header = {
