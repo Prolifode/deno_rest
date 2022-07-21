@@ -1,8 +1,7 @@
 import { Context, Router, send } from "../deps.ts";
 import configs from "../config/config.ts";
 
-// deno-lint-ignore no-explicit-any
-const router: any = new Router();
+const router = new Router();
 
 router.get("/(.*)", async (context: Context) => {
   if (configs.env === "production") {

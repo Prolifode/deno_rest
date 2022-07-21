@@ -1,6 +1,6 @@
 // deno-lint-ignore-file
 
-import { helpers, RouterContext, Status } from "../deps.ts";
+import { helpers, RouterContext, RouterMiddleware, Status } from "../deps.ts";
 import { throwError } from "./errorHandler.middleware.ts";
 
 /**
@@ -57,8 +57,8 @@ const checkValidation = async (
  * @param schema
  * @returns Promise<void>
  */
-export const validate = (schema: any) =>
-  async (ctx: RouterContext<string>, next: () => any): Promise<void> => {
+export const validate = <Path extends string>(schema: any): RouterMiddleware<Path> =>
+  async (ctx: RouterContext<Path>, next: () => any): Promise<void> => {
     const { params: _params, queries: _query, body: _body } = schema;
     const allQueries = [
       {

@@ -11,8 +11,7 @@ import {
   updateUserValidation,
 } from "../validations/user.validation.ts";
 
-// deno-lint-ignore no-explicit-any
-const router: any = new Router();
+const router = new Router();
 
 router.post(
   "/api/users",

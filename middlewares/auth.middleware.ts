@@ -1,5 +1,5 @@
 import { roleRights } from "../config/roles.ts";
-import { Status } from "../deps.ts";
+import { RouterMiddleware, Status } from "../deps.ts";
 import type { RouterContext } from "../deps.ts";
 import JwtHelper from "../helpers/jwt.helper.ts";
 import UserService from "../services/user.service.ts";
@@ -39,9 +39,9 @@ const checkRights = (
  * @param requiredRights
  * @returns Promise<void>
  */
-export const auth = (requiredRights: string[]) =>
+export const auth = <Path extends string>(requiredRights: string[]): RouterMiddleware<Path> =>
   async (
-    ctx: RouterContext<string>,
+    ctx: RouterContext<Path>,
     next: () => Promise<unknown>,
   ): Promise<void> => {
     let JWT: string;
