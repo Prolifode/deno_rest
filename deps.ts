@@ -8,8 +8,9 @@ export {
   isHttpError,
   Router,
   send,
-  Status,
+  Status
 } from "https://deno.land/x/oak/mod.ts";
+export type { RouterMiddleware } from "https://deno.land/x/oak/mod.ts";
 export type { RouterContext, State } from "https://deno.land/x/oak/mod.ts";
 export { configSync } from "https://deno.land/std/dotenv/mod.ts";
 export { getLogger, handlers, setup } from "https://deno.land/std/log/mod.ts";
