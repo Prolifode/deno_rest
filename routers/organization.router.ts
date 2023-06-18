@@ -14,36 +14,36 @@ const router = new Router();
 const path = "/api/organizations";
 router.post(
   path,
-  auth(["manageUsers"]),
-  validate(createUserValidation),
+  // auth(["manageUsers"]),
+  // validate(createUserValidation),
   Controller.create
 );
 
 router.get(
   "/api/organizations",
   // auth(["getUsers"]),
-  validate(getUsersValidation),
+  // validate(getUsersValidation),
   Controller.fetch
 );
 
 router.get(
   path + "/:id",
-  auth(["getUsers"]),
-  validate(getUserValidation),
+  // auth(["getUsers"]),
+  // validate(getUserValidation),
   Controller.show
 );
 
 router.put(
   path + "/:id",
-  auth(["manageUsers", "updateMe"]),
-  validate(updateUserValidation),
+  // auth(["manageUsers", "updateMe"]),
+  // validate(updateUserValidation),
   Controller.update
 );
 
 router.delete(
   path + "/:id",
-  auth(["manageUsers"]),
-  validate(deleteUserValidation),
+  // auth(["manageUsers"]),
+  // validate(deleteUserValidation),
   Controller.remove
 );
 
