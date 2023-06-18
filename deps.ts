@@ -8,11 +8,11 @@ export {
   isHttpError,
   Router,
   send,
-  Status
+  Status,
 } from "https://deno.land/x/oak/mod.ts";
 export type { RouterMiddleware } from "https://deno.land/x/oak/mod.ts";
 export type { RouterContext, State } from "https://deno.land/x/oak/mod.ts";
-export { configSync } from "https://deno.land/std/dotenv/mod.ts";
+export { configSync } from "https://deno.land/std@0.150.0/dotenv/mod.ts";
 export { getLogger, handlers, setup } from "https://deno.land/std/log/mod.ts";
 export { Bson, MongoClient } from "https://deno.land/x/mongo/mod.ts";
 export type { Document } from "https://deno.land/x/mongo/mod.ts";
