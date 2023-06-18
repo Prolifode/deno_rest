@@ -6,8 +6,9 @@ export interface UserSchema {
   email: string;
   password: string;
   role: string;
-  docVersion: number;
+  organization?: string;
   isDisabled: boolean;
+  docVersion: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

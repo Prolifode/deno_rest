@@ -13,13 +13,18 @@ class TokenService {
    * @returns Promise<Document> Returns Mongodb Document
    */
   private static saveTokenService(
-    options: TokenSchema,
+    options: TokenSchema
   ): Promise<string | Bson.ObjectId> {
     const createdAt = new Date();
     const { token, user, expires, type, blacklisted } = options;
-    return Token.insertOne(
-      { token, user, expires, type, blacklisted, createdAt },
-    );
+    return Token.insertOne({
+      token,
+      user,
+      expires,
+      type,
+      blacklisted,
+      createdAt,
+    });
   }
 
   /**
@@ -28,7 +33,7 @@ class TokenService {
    * @returns Promise<TokenStructure | Error> Returns access and refresh tokens with expiry
    */
   public static async generateAuthTokensService(
-    userId?: string,
+    userId?: string
   ): Promise<TokenStructure | Error> {
     if (!userId) {
       return throwError({
@@ -40,10 +45,10 @@ class TokenService {
         type: "NotFound",
       });
     }
-    const now = Date.now(); // in millis
-    const accessTokenExpires = (now + (config.jwtAccessExpiration * 1000));
+    const now = Date.now(); // in milliseconds
+    const accessTokenExpires = now + config.jwtAccessExpiration * 1000;
     const accessToken = await JwtHelper.getToken(accessTokenExpires, userId);
-    const refreshTokenExpires = (now + (config.jwtRefreshExpiration * 1000));
+    const refreshTokenExpires = now + config.jwtRefreshExpiration * 1000;
     const refreshToken = await JwtHelper.getToken(refreshTokenExpires, userId);
 
     await this.saveTokenService({
@@ -71,7 +76,7 @@ class TokenService {
    * @returns Promise<TokenStructure | Error> Returns access and refresh tokens with expiry
    */
   public static async generateRefreshTokensService(
-    userId?: string,
+    userId?: string
   ): Promise<TokenStructure | Error> {
     if (!userId) {
       return throwError({
@@ -83,9 +88,7 @@ class TokenService {
         type: "NotFound",
       });
     }
-    return await this.generateAuthTokensService(
-      userId,
-    );
+    return await this.generateAuthTokensService(userId);
   }
 
   /**
@@ -96,13 +99,16 @@ class TokenService {
    */
   public static async verifyTokenService(
     token: string,
-    type: string,
+    type: string
   ): Promise<TokenSchema | Error> {
     // deno-lint-ignore no-explicit-any
     const payload: any = await JwtHelper.getJwtPayload(token);
-    const tokenDoc = await Token.findOne(
-      { token, type, user: payload.id, blacklisted: false },
-    );
+    const tokenDoc = await Token.findOne({
+      token,
+      type,
+      user: payload.id,
+      blacklisted: false,
+    });
     if (!tokenDoc) {
       return throwError({
         status: Status.Unauthorized,
@@ -122,7 +128,7 @@ class TokenService {
    * @returns Promise<number | Error> Returns deleted count
    */
   public static async removeExistingRefreshToken(
-    id?: string,
+    id?: string
   ): Promise<number | Error> {
     if (!id) {
       return throwError({
@@ -134,9 +140,9 @@ class TokenService {
         type: "NotFound",
       });
     }
-    const deleteCount: number = await Token.deleteOne(
-      { _id: new Bson.ObjectId(id) },
-    );
+    const deleteCount: number = await Token.deleteOne({
+      _id: new Bson.ObjectId(id),
+    });
     if (!deleteCount) {
       return throwError({
         status: Status.NotFound,

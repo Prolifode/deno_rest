@@ -27,7 +27,7 @@ class Database {
    * Function to connect to mongo db
    */
   async connect() {
-    console.log(Deno.env.get("MONGO_URI"));
+    log.debug(Deno.env.get("MONGO_URI"));
     log.info("Database connecting...");
     const client: MongoClient = new MongoClient();
     await client.connect(this.url);

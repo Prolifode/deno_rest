@@ -1,5 +1,5 @@
 import { Router } from "../deps.ts";
-import UserController from "../controllers/user.controller.ts";
+import Controller from "../controllers/organization.controller.ts";
 import { auth } from "../middlewares/auth.middleware.ts";
 import { validate } from "../middlewares/validate.middleware.ts";
 import {
@@ -7,52 +7,44 @@ import {
   deleteUserValidation,
   getUsersValidation,
   getUserValidation,
-  meValidation,
   updateUserValidation,
 } from "../validations/user.validation.ts";
 
 const router = new Router();
-
+const path = "/api/organizations";
 router.post(
-  "/api/users",
+  path,
   auth(["manageUsers"]),
   validate(createUserValidation),
-  UserController.create
+  Controller.create
 );
 
 router.get(
-  "/api/users",
+  "/api/organizations",
   // auth(["getUsers"]),
   validate(getUsersValidation),
-  UserController.fetch
+  Controller.fetch
 );
 
 router.get(
-  "/api/me",
-  auth(["getMe"]),
-  validate(meValidation),
-  UserController.me
-);
-
-router.get(
-  "/api/users/:id",
+  path + "/:id",
   auth(["getUsers"]),
   validate(getUserValidation),
-  UserController.show
+  Controller.show
 );
 
 router.put(
-  "/api/users/:id",
+  path + "/:id",
   auth(["manageUsers", "updateMe"]),
   validate(updateUserValidation),
-  UserController.update
+  Controller.update
 );
 
 router.delete(
-  "/api/users/:id",
+  path + "/:id",
   auth(["manageUsers"]),
   validate(deleteUserValidation),
-  UserController.remove
+  Controller.remove
 );
 
 export default router;

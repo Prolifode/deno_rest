@@ -22,10 +22,10 @@ class UserService {
    * @returns Promise<string | Bson.ObjectId | Error> Returns Mongo Document of user or error
    */
   public static async createUser(
-    options: CreateUserStructure,
+    options: CreateUserStructure
   ): Promise<string | Bson.ObjectId | Error> {
     const { name, email, password, role, isDisabled } = options;
-    const userExists: (UserSchema | undefined) = await User.findOne({ email });
+    const userExists: UserSchema | undefined = await User.findOne({ email });
     if (userExists) {
       log.error("User already exists");
       return throwError({
@@ -40,8 +40,19 @@ class UserService {
     const hashedPassword = await HashHelper.encrypt(password);
     const createdAt = new Date();
 
-    const user: string | Bson.ObjectId = await User.insertOne(
-      {
+    const user: string | Bson.ObjectId = await User.insertOne({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      docVersion: 1,
+      isDisabled,
+      createdAt,
+    });
+
+    if (user) {
+      await UserHistory.insertOne({
+        user: user as string,
         name,
         email,
         password: hashedPassword,
@@ -49,22 +60,7 @@ class UserService {
         isDisabled,
         createdAt,
         docVersion: 1,
-      },
-    );
-
-    if (user) {
-      await UserHistory.insertOne(
-        {
-          user: user as string,
-          name,
-          email,
-          password: hashedPassword,
-          role,
-          isDisabled,
-          createdAt,
-          docVersion: 1,
-        },
-      );
+      });
     } else {
       log.error("Could not create user");
       return throwError({
@@ -93,9 +89,9 @@ class UserService {
    * @returns Promise<UserSchema | Error> Returns user document
    */
   public static async getUser(id: string): Promise<UserStructure | Error> {
-    const user: (UserSchema | undefined) = await User.findOne(
-      { _id: new Bson.ObjectId(id) },
-    );
+    const user: UserSchema | undefined = await User.findOne({
+      _id: new Bson.ObjectId(id),
+    });
     if (!user) {
       log.error("User not found");
       return throwError({
@@ -121,11 +117,11 @@ class UserService {
   public static async updateUser(
     id: string,
     state: Record<string, string>,
-    options: UpdateUserStructure,
+    options: UpdateUserStructure
   ): Promise<UpdatedStructure | Error> {
-    const user: (UserSchema | undefined) = await User.findOne(
-      { _id: new Bson.ObjectId(id) },
-    );
+    const user: UserSchema | undefined = await User.findOne({
+      _id: new Bson.ObjectId(id),
+    });
     if (!user) {
       log.error("User not found");
       return throwError({
@@ -151,8 +147,8 @@ class UserService {
     }
     const roleTobeChanged = roles.indexOf(role as string);
     if (
-      (roleTobeChanged > roles.indexOf(user.role)) &&
-      (roles.indexOf(state.role) < roleTobeChanged)
+      roleTobeChanged > roles.indexOf(user.role) &&
+      roles.indexOf(state.role) < roleTobeChanged
     ) {
       return throwError({
         status: Status.Forbidden,
@@ -164,7 +160,7 @@ class UserService {
       });
     }
     if (email) {
-      const userExists: (UserSchema | undefined) = await User.findOne({
+      const userExists: UserSchema | undefined = await User.findOne({
         email,
         _id: { $ne: id },
       });
@@ -183,22 +179,25 @@ class UserService {
     const { docVersion } = user;
     const newDocVersion = docVersion + 1;
     const updatedAt = new Date();
-    const result: ({
+    const result: {
       // deno-lint-ignore no-explicit-any
       upsertedId: any;
       upsertedCount: number;
       matchedCount: number;
       modifiedCount: number;
-    }) = await User.updateOne({ _id: new Bson.ObjectId(id) }, {
-      $set: {
-        name,
-        email,
-        role,
-        isDisabled,
-        updatedAt,
-        docVersion: newDocVersion,
-      },
-    });
+    } = await User.updateOne(
+      { _id: new Bson.ObjectId(id) },
+      {
+        $set: {
+          name,
+          email,
+          role,
+          isDisabled,
+          updatedAt,
+          docVersion: newDocVersion,
+        },
+      }
+    );
     if (result) {
       const user: UserHistorySchema = {
         user: id,
@@ -235,9 +234,9 @@ class UserService {
    * @returns Promise<number | Error Returns deleted count
    */
   public static async removeUser(id: string): Promise<number | Error> {
-    const user: (UserSchema | undefined) = await User.findOne(
-      { _id: new Bson.ObjectId(id) },
-    );
+    const user: UserSchema | undefined = await User.findOne({
+      _id: new Bson.ObjectId(id),
+    });
     if (!user) {
       log.error("User not found");
       return throwError({
@@ -256,18 +255,16 @@ class UserService {
       const { name, email, role, isDisabled, createdAt, docVersion } = user;
       const newDocVersion = docVersion + 1;
       const updatedAt = new Date();
-      await UserHistory.insertOne(
-        {
-          user: id,
-          name,
-          email,
-          role,
-          isDisabled,
-          createdAt,
-          updatedAt,
-          docVersion: newDocVersion,
-        },
-      );
+      await UserHistory.insertOne({
+        user: id,
+        name,
+        email,
+        role,
+        isDisabled,
+        createdAt,
+        updatedAt,
+        docVersion: newDocVersion,
+      });
     } else {
       return throwError({
         status: Status.BadRequest,
