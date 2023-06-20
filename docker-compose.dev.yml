@@ -2,7 +2,7 @@ version: '3'
 
 services:
   deno-rest:
-    container_name: deno-rest-test
+    container_name: deno-rest-dev
     environment:
-      MONGO_URI: mongodb://mongo:27017/deno_rest
-    command: denon start
+      MONGO_URI: mongodb://mongo:27017/deno_rest_dev
+    command: denon start --lock=deno.lock

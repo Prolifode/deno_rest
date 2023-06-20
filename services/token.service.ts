@@ -41,9 +41,9 @@ class TokenService {
       });
     }
     const now = Date.now(); // in millis
-    const accessTokenExpires = (now + (config.jwtAccessExpiration * 1000));
+    const accessTokenExpires = now + (config.jwtAccessExpiration * 1000);
     const accessToken = await JwtHelper.getToken(accessTokenExpires, userId);
-    const refreshTokenExpires = (now + (config.jwtRefreshExpiration * 1000));
+    const refreshTokenExpires = now + (config.jwtRefreshExpiration * 1000);
     const refreshToken = await JwtHelper.getToken(refreshTokenExpires, userId);
 
     await this.saveTokenService({

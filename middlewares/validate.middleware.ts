@@ -57,7 +57,8 @@ const checkValidation = async (
  * @param schema
  * @returns Promise<void>
  */
-export const validate = <Path extends string>(schema: any): RouterMiddleware<Path> =>
+export const validate =
+  <Path extends string>(schema: any): RouterMiddleware<Path> =>
   async (ctx: RouterContext<Path>, next: () => any): Promise<void> => {
     const { params: _params, queries: _query, body: _body } = schema;
     const allQueries = [

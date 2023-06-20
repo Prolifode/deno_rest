@@ -1,6 +1,6 @@
-import { CreateUserStructure } from "../../types/types.interface.ts";
+import { CreateUserStructure } from "types/types.interface.ts";
 import HashHelper from "../../helpers/hash.helper.ts";
-import { User } from "../../models/user.model.ts";
+import { User } from "models/user.model.ts";
 import db from "../../db/db.ts";
 import config from "../../config/config.ts";
 import JwtHelper from "../../helpers/jwt.helper.ts";
@@ -30,6 +30,6 @@ export const createUser = async (user: CreateUserStructure) => {
 };
 
 export const generateAccessToken = async (userId: string) => {
-  const accessTokenExpires = (Date.now() + (config.jwtAccessExpiration * 1000));
+  const accessTokenExpires = Date.now() + (config.jwtAccessExpiration * 1000);
   return await JwtHelper.getToken(accessTokenExpires, userId);
 };
