@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "mongo/": "https://deno.land/x/mongo@v0.31.2/",
+    "djwt/": "https://deno.land/x/djwt@v2.9/",
+    "oak/": "https://deno.land/x/oak@v12.5.0/",
+    "denon/": "https://deno.land/x/denon@2.5.0/",
+    "bcrypt/": "https://deno.land/x/bcrypt@v0.4.1/",
+    "dotenv/": "https://deno.land/std@0.192.0/dotenv/",
+    "log/": "https://deno.land/std@0.192.0/log/",
+    "cors/": "https://deno.land/x/cors@v1.2.2/",
+    "superoak/": "https://deno.land/x/superoak@4.7.0/",
+    "testing/": "https://deno.land/std@0.192.0/testing/",
+    "expect/": "https://deno.land/x/expect@v0.3.0/",
+    "yup": "npm:yup@^1.2.0"
+  }
+}

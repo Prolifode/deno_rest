@@ -25,7 +25,7 @@ class UserService {
     options: CreateUserStructure,
   ): Promise<string | Bson.ObjectId | Error> {
     const { name, email, password, role, isDisabled } = options;
-    const userExists: (UserSchema | undefined) = await User.findOne({ email });
+    const userExists: UserSchema | undefined = await User.findOne({ email });
     if (userExists) {
       log.error("User already exists");
       return throwError({
@@ -93,7 +93,7 @@ class UserService {
    * @returns Promise<UserSchema | Error> Returns user document
    */
   public static async getUser(id: string): Promise<UserStructure | Error> {
-    const user: (UserSchema | undefined) = await User.findOne(
+    const user: UserSchema | undefined = await User.findOne(
       { _id: new Bson.ObjectId(id) },
     );
     if (!user) {
@@ -123,7 +123,7 @@ class UserService {
     state: Record<string, string>,
     options: UpdateUserStructure,
   ): Promise<UpdatedStructure | Error> {
-    const user: (UserSchema | undefined) = await User.findOne(
+    const user: UserSchema | undefined = await User.findOne(
       { _id: new Bson.ObjectId(id) },
     );
     if (!user) {
@@ -164,7 +164,7 @@ class UserService {
       });
     }
     if (email) {
-      const userExists: (UserSchema | undefined) = await User.findOne({
+      const userExists: UserSchema | undefined = await User.findOne({
         email,
         _id: { $ne: id },
       });
@@ -183,13 +183,13 @@ class UserService {
     const { docVersion } = user;
     const newDocVersion = docVersion + 1;
     const updatedAt = new Date();
-    const result: ({
+    const result: {
       // deno-lint-ignore no-explicit-any
       upsertedId: any;
       upsertedCount: number;
       matchedCount: number;
       modifiedCount: number;
-    }) = await User.updateOne({ _id: new Bson.ObjectId(id) }, {
+    } = await User.updateOne({ _id: new Bson.ObjectId(id) }, {
       $set: {
         name,
         email,
@@ -235,7 +235,7 @@ class UserService {
    * @returns Promise<number | Error Returns deleted count
    */
   public static async removeUser(id: string): Promise<number | Error> {
-    const user: (UserSchema | undefined) = await User.findOne(
+    const user: UserSchema | undefined = await User.findOne(
       { _id: new Bson.ObjectId(id) },
     );
     if (!user) {

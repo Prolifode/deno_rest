@@ -1,17 +1,17 @@
-import { configSync } from "../deps.ts";
+import { loadSync } from "../deps.ts";
 
 const env: string = Deno.env.get("ENV") || "development";
 const envPath: string = `environments/.env.${env}`.toString();
 
-configSync({
-  path: envPath,
+loadSync({
+  envPath,
   export: true,
 });
 
 /**
  * Configuration
  */
-const config: ({
+const config: {
   env: string;
   appName: string;
   jwtAccessExpiration: number;
@@ -28,7 +28,7 @@ const config: ({
   clientProtocol: string;
   url: string;
   clientUrl: string;
-}) = {
+} = {
   env,
   appName: Deno.env.get("APP_NAME") as unknown as string,
   jwtAccessExpiration: Number(

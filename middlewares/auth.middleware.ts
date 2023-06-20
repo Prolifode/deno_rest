@@ -39,7 +39,8 @@ const checkRights = (
  * @param requiredRights
  * @returns Promise<void>
  */
-export const auth = <Path extends string>(requiredRights: string[]): RouterMiddleware<Path> =>
+export const auth =
+  <Path extends string>(requiredRights: string[]): RouterMiddleware<Path> =>
   async (
     ctx: RouterContext<Path>,
     next: () => Promise<unknown>,

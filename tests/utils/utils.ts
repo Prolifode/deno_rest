@@ -30,6 +30,6 @@ export const createUser = async (user: CreateUserStructure) => {
 };
 
 export const generateAccessToken = async (userId: string) => {
-  const accessTokenExpires = (Date.now() + (config.jwtAccessExpiration * 1000));
+  const accessTokenExpires = Date.now() + (config.jwtAccessExpiration * 1000);
   return await JwtHelper.getToken(accessTokenExpires, userId);
 };

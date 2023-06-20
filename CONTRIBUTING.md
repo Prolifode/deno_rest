@@ -1,10 +1,13 @@
 # Contributing
 
-First off, thank you so much for taking the time to contribute. All contributions are more than welcome!
+First off, thank you so much for taking the time to contribute. All
+contributions are more than welcome!
 
 ## How can I contribute?
 
-If you have an awesome new feature that you want to implement or you found a bug that you would like to fix, here are some instructions to guide you through the process:
+If you have an awesome new feature that you want to implement or you found a bug
+that you would like to fix, here are some instructions to guide you through the
+process:
 
 - **Create an issue** to explain and discuss the details
 - **Fork the repo**
