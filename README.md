@@ -48,9 +48,6 @@ Review the `.environments/.env.example` file and create a suitable `.env` file b
 Denon is used in this project to automatically restart the server when file changes are detected. To install Denon, run the following command in your terminal:
 
 ```bash
-deno install
-
-```bash
 deno install -qAf --unstable https://deno.land/x/denon@2.4.7/denon.ts
 ```
 
