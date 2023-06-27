@@ -1,6 +1,6 @@
 # Deno REST - A Deno RESTful API Boilerplate
 
-![Deno Logo](https://deno.land/logo.svg)
+![Deno Logo](https://deno.land/images/deno_logo_4.gif)
 
 [![CircleCI](https://circleci.com/gh/Prolifode/deno_rest.svg?style=svg)](https://circleci.com/gh/Prolifode/deno_rest)
 
