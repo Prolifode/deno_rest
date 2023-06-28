@@ -10,6 +10,7 @@ import type {
 } from "../types/types.interface.ts";
 import TokenService from "./token.service.ts";
 import UserService from "./user.service.ts";
+import { RefreshTokenStructure } from "../types/types.interface.ts";
 
 class AuthService {
   /**
@@ -61,7 +62,7 @@ class AuthService {
    */
   public static async getRefreshToken(
     token: string,
-  ): Promise<TokenStructure | Error> {
+  ): Promise<RefreshTokenStructure | Error> {
     const refreshTokenDoc: TokenSchema | Error = await TokenService
       .verifyTokenService(token, "refresh");
     if ("user" in refreshTokenDoc) {
@@ -70,9 +71,10 @@ class AuthService {
       await TokenService.removeExistingRefreshToken(
         refreshTokenDoc?._id?.toString(),
       );
-      return await TokenService.generateRefreshTokensService(
+      const tokens = await TokenService.generateRefreshTokensService(
         "id" in user ? user.id : undefined,
       );
+      return { tokens };
     }
     return throwError({
       status: Status.BadRequest,
