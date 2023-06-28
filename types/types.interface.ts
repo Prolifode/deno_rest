@@ -15,6 +15,9 @@ export interface UserStructure {
   updatedAt?: Date;
 }
 
+export interface RefreshTokenStructure {
+  tokens: TokenStructure | Error;
+}
 export interface LoginStructure {
   tokens: TokenStructure | Error;
   user: UserStructure;
