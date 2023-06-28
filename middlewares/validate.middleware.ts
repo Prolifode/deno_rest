@@ -1,7 +1,7 @@
 // deno-lint-ignore-file
 
-import { helpers, RouterContext, RouterMiddleware, Status } from "../deps.ts";
-import { throwError } from "./errorHandler.middleware.ts";
+import { helpers, RouterContext, RouterMiddleware, Status } from '../deps.ts';
+import { throwError } from './errorHandler.middleware.ts';
 
 /**
  * Checks if there is any unwanted parameters provided and
@@ -17,11 +17,11 @@ const checkInvalidParams = (fields: any, payload: any): void => {
     if (allowedParams.indexOf(param) < 0) {
       throwError({
         status: Status.BadRequest,
-        name: "ValidationError",
+        name: 'ValidationError',
         path: param,
         param,
         message: `${param} is not allowed`,
-        type: "BadRequest",
+        type: 'BadRequest',
       });
     }
   }
@@ -63,17 +63,17 @@ export const validate =
     const { params: _params, queries: _query, body: _body } = schema;
     const allQueries = [
       {
-        type: "body",
+        type: 'body',
         _data: await ctx.request.body().value,
         _schema: _body,
       },
       {
-        type: "param",
+        type: 'param',
         _data: ctx.params,
         _schema: _params,
       },
       {
-        type: "query",
+        type: 'query',
         _data: helpers.getQuery(ctx),
         _schema: _query,
       },
@@ -84,15 +84,15 @@ export const validate =
         await checkValidation(_q._schema, _q._data);
       } else if (
         _q._data && Object.keys(_q._data).length &&
-        (!_q._schema || _q._schema && !_q._schema.has("fields"))
+        (!_q._schema || _q._schema && !_q._schema.has('fields'))
       ) {
         throwError({
           status: Status.BadRequest,
-          name: "ValidationError",
+          name: 'ValidationError',
           path: _q.type,
           param: _q.type,
           message: `${_q.type} is not allowed`,
-          type: "BadRequest",
+          type: 'BadRequest',
         });
       }
     }

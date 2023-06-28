@@ -1,5 +1,5 @@
-import { yup } from "../deps.ts";
-import { roles } from "../config/roles.ts";
+import { yup } from '../deps.ts';
+import { Role, rolesRank } from '../config/roles.ts';
 
 export const createUserValidation = {
   body: yup.object({
@@ -21,8 +21,8 @@ export const createUserValidation = {
       .max(255),
     role: yup
       .string()
-      .default("user")
-      .oneOf(roles),
+      .default(Role.USER)
+      .oneOf(rolesRank),
     isDisabled: yup
       .bool()
       .default(false),
@@ -65,8 +65,8 @@ export const updateUserValidation = {
       .trim(),
     role: yup
       .string()
-      .default("user")
-      .oneOf(roles),
+      .default(Role.USER)
+      .oneOf(rolesRank),
     isDisabled: yup
       .bool(),
   }),

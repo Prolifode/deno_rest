@@ -1,9 +1,9 @@
-import config from "../config/config.ts";
-import { Bson, Status } from "../deps.ts";
-import JwtHelper from "../helpers/jwt.helper.ts";
-import { throwError } from "../middlewares/errorHandler.middleware.ts";
-import { Token, TokenSchema } from "../models/token.model.ts";
-import type { TokenStructure } from "../types/types.interface.ts";
+import config from '../config/config.ts';
+import { Bson, Status } from '../deps.ts';
+import JwtHelper from '../helpers/jwt.helper.ts';
+import { throwError } from '../middlewares/errorHandler.middleware.ts';
+import { Token, TokenSchema } from '../models/token.model.ts';
+import type { TokenStructure } from '../types/types.interface.ts';
 
 class TokenService {
   /**
@@ -33,11 +33,11 @@ class TokenService {
     if (!userId) {
       return throwError({
         status: Status.NotFound,
-        name: "NotFound",
-        path: "access_token",
-        param: "access_token",
+        name: 'NotFound',
+        path: 'access_token',
+        param: 'access_token',
         message: `userId is invalid`,
-        type: "NotFound",
+        type: 'NotFound',
       });
     }
     const now = Date.now(); // in millis
@@ -50,7 +50,7 @@ class TokenService {
       token: refreshToken,
       user: userId,
       expires: new Date(refreshTokenExpires),
-      type: "refresh",
+      type: 'refresh',
       blacklisted: false,
     });
     return {
@@ -76,11 +76,11 @@ class TokenService {
     if (!userId) {
       return throwError({
         status: Status.NotFound,
-        name: "NotFound",
-        path: "refresh_token",
-        param: "refresh_token",
+        name: 'NotFound',
+        path: 'refresh_token',
+        param: 'refresh_token',
         message: `userId is invalid`,
-        type: "NotFound",
+        type: 'NotFound',
       });
     }
     return await this.generateAuthTokensService(
@@ -106,11 +106,11 @@ class TokenService {
     if (!tokenDoc) {
       return throwError({
         status: Status.Unauthorized,
-        name: "Unauthorized",
+        name: 'Unauthorized',
         path: `${type}_token`,
         param: `${type}_token`,
         message: `${type}_token is invalid`,
-        type: "Unauthorized",
+        type: 'Unauthorized',
       });
     }
     return tokenDoc;
@@ -127,11 +127,11 @@ class TokenService {
     if (!id) {
       return throwError({
         status: Status.NotFound,
-        name: "NotFound",
-        path: "token",
-        param: "token",
+        name: 'NotFound',
+        path: 'token',
+        param: 'token',
         message: `token not found`,
-        type: "NotFound",
+        type: 'NotFound',
       });
     }
     const deleteCount: number = await Token.deleteOne(
@@ -140,11 +140,11 @@ class TokenService {
     if (!deleteCount) {
       return throwError({
         status: Status.NotFound,
-        name: "NotFound",
-        path: "refresh_token",
-        param: "refresh_token",
+        name: 'NotFound',
+        path: 'refresh_token',
+        param: 'refresh_token',
         message: `refresh_token not found`,
-        type: "NotFound",
+        type: 'NotFound',
       });
     }
     return deleteCount;

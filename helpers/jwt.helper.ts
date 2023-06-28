@@ -1,11 +1,11 @@
-import { create, Status, verify } from "../deps.ts";
-import type { Header, Payload } from "../deps.ts";
-import { throwError } from "../middlewares/errorHandler.middleware.ts";
+import { create, Status, verify } from '../deps.ts';
+import type { Header, Payload } from '../deps.ts';
+import { throwError } from '../middlewares/errorHandler.middleware.ts';
 
 const key = await crypto.subtle.generateKey(
-  { name: "HMAC", hash: "SHA-512" },
+  { name: 'HMAC', hash: 'SHA-512' },
   true,
-  ["sign", "verify"],
+  ['sign', 'verify'],
 );
 
 class JwtHelper {
@@ -21,11 +21,11 @@ class JwtHelper {
   ): Promise<string> {
     const now = Date.now(); // in millis
     const header: Header = {
-      alg: "HS512",
-      typ: "JWT",
+      alg: 'HS512',
+      typ: 'JWT',
     };
     const payload: Payload = {
-      iss: "deno_rest",
+      iss: 'deno_rest',
       iat: now,
       id,
       exp,
@@ -45,11 +45,11 @@ class JwtHelper {
     } catch (_e) {
       return throwError({
         status: Status.Unauthorized,
-        name: "Unauthorized",
-        path: "access_token",
-        param: "access_token",
+        name: 'Unauthorized',
+        path: 'access_token',
+        param: 'access_token',
         message: `access_token is expired`,
-        type: "Unauthorized",
+        type: 'Unauthorized',
       });
     }
   }
