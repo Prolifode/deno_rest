@@ -1,9 +1,9 @@
-import { CreateUserStructure } from "../../types/types.interface.ts";
-import HashHelper from "../../helpers/hash.helper.ts";
-import { User } from "../../models/user.model.ts";
-import db from "../../db/db.ts";
-import config from "../../config/config.ts";
-import JwtHelper from "../../helpers/jwt.helper.ts";
+import { CreateUserStructure } from '../../types/types.interface.ts';
+import HashHelper from '../../helpers/hash.helper.ts';
+import { User } from '../../models/user.model.ts';
+import db from '../../db/db.ts';
+import config from '../../config/config.ts';
+import JwtHelper from '../../helpers/jwt.helper.ts';
 
 export const clearCollection = async (collection: string) => {
   return await db.getDatabase.collection(collection).deleteMany({});

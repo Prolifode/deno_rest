@@ -1,7 +1,7 @@
-import configs from "../config/config.ts";
-import { MongoClient } from "../deps.ts";
-import log from "../middlewares/logger.middleware.ts";
-import Seed from "../seed.ts";
+import configs from '../config/config.ts';
+import { MongoClient } from '../deps.ts';
+import log from '../middlewares/logger.middleware.ts';
+import Seed from '../seed.ts';
 
 const { dbName, mongoUrl, seed } = configs;
 
@@ -27,15 +27,15 @@ class Database {
    * Function to connect to mongo db
    */
   async connect() {
-    log.info(`MongoDB Server : ${Deno.env.get("MONGO_URI")} connecting...`);
+    log.info(`MongoDB Server : ${Deno.env.get('MONGO_URI')} connecting...`);
     const client: MongoClient = new MongoClient();
     await client.connect(this.url);
     this.client = client;
-    log.info("Database connected!");
+    log.info('Database connected!');
     if (seed) {
       const ev = setTimeout(async () => {
         await this.seeder.seedCollection();
-        log.info("All Seed done");
+        log.info('All Seed done');
         clearTimeout(ev);
       }, 10);
     }

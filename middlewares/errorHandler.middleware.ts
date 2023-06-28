@@ -1,5 +1,5 @@
-import { Context, State, Status } from "../deps.ts";
-import type { Err } from "../types/types.interface.ts";
+import { Context, State, Status } from '../deps.ts';
+import type { Err } from '../types/types.interface.ts';
 
 /**
  * Throws Error with provided params

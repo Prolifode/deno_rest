@@ -1,9 +1,9 @@
 [
   {
-    "name": "Vicky Gonsalves",
-    "email": "vicky.gonsalves@outlook.com",
+    "name": "Admin",
+    "email": "admin@no-reply.com",
     "password": "123456",
-    "role": "admin",
+    "role": "ADMIN",
     "isDisabled": false
   }
 ]

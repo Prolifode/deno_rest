@@ -17,9 +17,9 @@
  *
  * @exports AuthController - This class is exported for use in other parts of the application.
  */
-import type { RouterContext } from "../deps.ts";
-import log from "../middlewares/logger.middleware.ts";
-import AuthService from "../services/auth.service.ts";
+import type { RouterContext } from '../deps.ts';
+import log from '../middlewares/logger.middleware.ts';
+import AuthService from '../services/auth.service.ts';
 
 class AuthController {
   /**
@@ -37,7 +37,7 @@ class AuthController {
   ): Promise<void> {
     const body = request.body();
     const { email, password } = await body.value;
-    log.debug("Trying Login user");
+    log.debug('Trying Login user');
     response.body = await AuthService.login({ email, password });
   }
 
@@ -55,7 +55,7 @@ class AuthController {
   ): Promise<void> {
     const body = request.body();
     const { refreshToken } = await body.value;
-    log.debug("Getting refresh token");
+    log.debug('Getting refresh token');
     response.body = await AuthService.getRefreshToken(refreshToken);
   }
 }

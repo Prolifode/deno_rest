@@ -1,10 +1,10 @@
-import { roleRights } from "../config/roles.ts";
-import { RouterMiddleware, Status } from "../deps.ts";
-import type { RouterContext } from "../deps.ts";
-import JwtHelper from "../helpers/jwt.helper.ts";
-import UserService from "../services/user.service.ts";
-import type { UserStructure } from "../types/types.interface.ts";
-import { throwError } from "./errorHandler.middleware.ts";
+import { roleRights } from '../config/roles.ts';
+import { RouterMiddleware, Status } from '../deps.ts';
+import type { RouterContext } from '../deps.ts';
+import JwtHelper from '../helpers/jwt.helper.ts';
+import UserService from '../services/user.service.ts';
+import type { UserStructure } from '../types/types.interface.ts';
+import { throwError } from './errorHandler.middleware.ts';
 /**
  * Check user Rights
  * @param requiredRights
@@ -23,11 +23,11 @@ const checkRights = (
     if (!hasRequiredRights) {
       return throwError({
         status: Status.Forbidden,
-        name: "Forbidden",
+        name: 'Forbidden',
         path: `access_token`,
         param: `access_token`,
         message: `Insufficient rights`,
-        type: "Forbidden",
+        type: 'Forbidden',
       });
     }
   }
@@ -46,11 +46,11 @@ export const auth =
     next: () => Promise<unknown>,
   ): Promise<void> => {
     let JWT: string;
-    const jwt: string = ctx.request.headers.get("Authorization")
-      ? ctx.request.headers.get("Authorization")!
-      : "";
-    if (jwt && jwt.includes("Bearer")) {
-      JWT = jwt.split("Bearer ")[1];
+    const jwt: string = ctx.request.headers.get('Authorization')
+      ? ctx.request.headers.get('Authorization')!
+      : '';
+    if (jwt && jwt.includes('Bearer')) {
+      JWT = jwt.split('Bearer ')[1];
       // deno-lint-ignore no-explicit-any
       const data: any | Error = await JwtHelper.getJwtPayload(JWT);
       if (data) {
@@ -61,21 +61,21 @@ export const auth =
       } else {
         throwError({
           status: Status.Unauthorized,
-          name: "Unauthorized",
+          name: 'Unauthorized',
           path: `access_token`,
           param: `access_token`,
           message: `access_token is invalid`,
-          type: "Unauthorized",
+          type: 'Unauthorized',
         });
       }
     } else {
       throwError({
         status: Status.Unauthorized,
-        name: "Unauthorized",
+        name: 'Unauthorized',
         path: `access_token`,
         param: `access_token`,
         message: `access_token is required`,
-        type: "Unauthorized",
+        type: 'Unauthorized',
       });
     }
     await next();

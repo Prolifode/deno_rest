@@ -1,4 +1,4 @@
-import db from "../db/db.ts";
+import db from '../db/db.ts';
 
 export interface UserHistorySchema {
   _id?: string;
@@ -14,5 +14,5 @@ export interface UserHistorySchema {
 }
 
 export const UserHistory = db.getDatabase.collection<UserHistorySchema>(
-  "users_history",
+  'users_history',
 );

@@ -30,11 +30,11 @@
  *
  * @exports UserController - This class is exported for use in other parts of the application.
  */
-import { roles } from "../config/roles.ts";
-import type { RouterContext } from "../deps.ts";
-import log from "../middlewares/logger.middleware.ts";
-import UserService from "../services/user.service.ts";
-import { Status } from "../deps.ts";
+import { Role } from '../config/roles.ts';
+import type { RouterContext } from '../deps.ts';
+import log from '../middlewares/logger.middleware.ts';
+import UserService from '../services/user.service.ts';
+import { Status } from '../deps.ts';
 
 class UserController {
   /**
@@ -54,13 +54,13 @@ class UserController {
       role,
       isDisabled,
     } = await body.value;
-    log.debug("Creating user");
+    log.debug('Creating user');
     response.body = await UserService.createUser({
       name,
       email,
       password,
-      role: role || roles[0],
-      isDisabled: typeof isDisabled === "boolean" ? isDisabled : false,
+      role: role || Role.USER,
+      isDisabled: typeof isDisabled === 'boolean' ? isDisabled : false,
     });
     response.status = Status.Created;
   }
@@ -73,7 +73,7 @@ class UserController {
   public static async fetch(
     { response }: RouterContext<string>,
   ): Promise<void> {
-    log.debug("Getting users list");
+    log.debug('Getting users list');
     response.body = await UserService.getUsers();
   }
 
@@ -84,7 +84,7 @@ class UserController {
    * @returns Promise<void>
    */
   public static me({ state, response }: RouterContext<string>): void {
-    log.debug("Getting me data");
+    log.debug('Getting me data');
     response.body = state;
   }
 
@@ -98,7 +98,7 @@ class UserController {
     { params, response }: RouterContext<string>,
   ): Promise<void> {
     const { id } = params;
-    log.debug("Getting user");
+    log.debug('Getting user');
     response.body = await UserService.getUser(id as string);
   }
 
@@ -116,7 +116,7 @@ class UserController {
     const { id } = params;
     const body = request.body();
     const { name, email, role, isDisabled } = await body.value;
-    log.debug("Updating user");
+    log.debug('Updating user');
     await UserService.updateUser(id as string, state, {
       name,
       email,
@@ -136,7 +136,7 @@ class UserController {
     { params, response }: RouterContext<string>,
   ): Promise<void> {
     const { id } = params;
-    log.debug("Removing user");
+    log.debug('Removing user');
     const deleteCount: number | Error = await UserService.removeUser(
       id as string,
     );

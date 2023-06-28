@@ -1,6 +1,6 @@
-import db from "./db/db.ts";
-import HashHelper from "./helpers/hash.helper.ts";
-import log from "./middlewares/logger.middleware.ts";
+import db from './db/db.ts';
+import HashHelper from './helpers/hash.helper.ts';
+import log from './middlewares/logger.middleware.ts';
 
 const seedCollections: Array<Record<string, boolean>> = [
   {
@@ -31,7 +31,7 @@ class Seed {
       const _data = JSON.parse(await Deno.readTextFile(`./data/${name}.json`));
       if (_data && Array.isArray(_data)) {
         data = _data;
-        if (name === "users") {
+        if (name === 'users') {
           for (const d of data) {
             d.password = await HashHelper.encrypt(d.password);
           }
@@ -44,7 +44,7 @@ class Seed {
         }
       }
     } catch (e) {
-      if (e === "Invalid key length") {
+      if (e === 'Invalid key length') {
         log.error(`Please shorten the 'KEY' in your .env`);
       } else {
         log.error(`${name}.json file not found in data dir`);

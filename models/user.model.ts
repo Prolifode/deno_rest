@@ -1,4 +1,4 @@
-import db from "../db/db.ts";
+import db from '../db/db.ts';
 
 export interface UserSchema {
   _id: string;
@@ -12,4 +12,4 @@ export interface UserSchema {
   updatedAt?: Date;
 }
 
-export const User = db.getDatabase.collection<UserSchema>("users");
+export const User = db.getDatabase.collection<UserSchema>('users');

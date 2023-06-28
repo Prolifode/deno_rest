@@ -1,4 +1,4 @@
-import db from "../db/db.ts";
+import db from '../db/db.ts';
 
 export interface TokenSchema {
   _id?: string;
@@ -11,4 +11,4 @@ export interface TokenSchema {
   updatedAt?: Date;
 }
 
-export const Token = db.getDatabase.collection<TokenSchema>("tokens");
+export const Token = db.getDatabase.collection<TokenSchema>('tokens');

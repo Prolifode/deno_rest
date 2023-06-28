@@ -1,11 +1,11 @@
-import { getLogger, handlers, setup } from "../deps.ts";
-import configs from "../config/config.ts";
+import { getLogger, handlers, setup } from '../deps.ts';
+import configs from '../config/config.ts';
 
 const { env } = configs;
 
 await setup({
   handlers: {
-    functionFmt: new handlers.ConsoleHandler("DEBUG", {
+    functionFmt: new handlers.ConsoleHandler('DEBUG', {
       formatter: (logRecord) => {
         const time = new Date().toISOString();
         let msg = `${time} [${logRecord.level}] ${logRecord.msg}`;
@@ -20,20 +20,20 @@ await setup({
 
   loggers: {
     default: {
-      level: "DEBUG",
-      handlers: ["functionFmt"],
+      level: 'DEBUG',
+      handlers: ['functionFmt'],
     },
     tests: {
-      level: "CRITICAL",
-      handlers: ["functionFmt"],
+      level: 'CRITICAL',
+      handlers: ['functionFmt'],
     },
   },
 });
 
 let loggerMiddleware = getLogger();
 
-if (env === "test") {
-  loggerMiddleware = getLogger("tests");
+if (env === 'test') {
+  loggerMiddleware = getLogger('tests');
 }
 
 export default loggerMiddleware;

@@ -1,4 +1,5 @@
-import { Bson } from "../deps.ts";
+import { Bson } from '../deps.ts';
+import { Role } from '../config/roles.ts';
 
 export interface TokenStructure {
   access: { expires: Date; token: string };
@@ -27,14 +28,14 @@ export interface CreateUserStructure {
   name: string;
   email: string;
   password: string;
-  role: string;
+  role: Role;
   isDisabled: boolean;
 }
 
 export interface UpdateUserStructure {
   name?: string;
   email?: string;
-  role?: string;
+  role?: Role;
   isDisabled?: boolean;
 }
 

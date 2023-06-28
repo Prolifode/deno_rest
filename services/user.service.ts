@@ -1,19 +1,24 @@
-import { Bson, Status } from "../deps.ts";
-import HashHelper from "../helpers/hash.helper.ts";
-import { throwError } from "../middlewares/errorHandler.middleware.ts";
-import log from "../middlewares/logger.middleware.ts";
-import { User, UserSchema } from "../models/user.model.ts";
+import { Bson, Status } from '../deps.ts';
+import HashHelper from '../helpers/hash.helper.ts';
+import { throwError } from '../middlewares/errorHandler.middleware.ts';
+import log from '../middlewares/logger.middleware.ts';
+import { User, UserSchema } from '../models/user.model.ts';
 import {
   UserHistory,
   UserHistorySchema,
-} from "../models/user_history.model.ts";
+} from '../models/user_history.model.ts';
 import type {
   CreateUserStructure,
   UpdatedStructure,
   UpdateUserStructure,
   UserStructure,
-} from "../types/types.interface.ts";
-import { roleRights, roles } from "../config/roles.ts";
+} from '../types/types.interface.ts';
+import {
+  PermissionList,
+  Role,
+  roleRights,
+  rolesRank,
+} from '../config/roles.ts';
 
 class UserService {
   /**
@@ -27,14 +32,14 @@ class UserService {
     const { name, email, password, role, isDisabled } = options;
     const userExists: UserSchema | undefined = await User.findOne({ email });
     if (userExists) {
-      log.error("User already exists");
+      log.error('User already exists');
       return throwError({
         status: Status.Conflict,
-        name: "Conflict",
-        path: "user",
-        param: "user",
+        name: 'Conflict',
+        path: 'user',
+        param: 'user',
         message: `User already exists`,
-        type: "Conflict",
+        type: 'Conflict',
       });
     }
     const hashedPassword = await HashHelper.encrypt(password);
@@ -66,14 +71,14 @@ class UserService {
         },
       );
     } else {
-      log.error("Could not create user");
+      log.error('Could not create user');
       return throwError({
         status: Status.BadRequest,
-        name: "BadRequest",
-        path: "user",
-        param: "user",
+        name: 'BadRequest',
+        path: 'user',
+        param: 'user',
         message: `Could not create user`,
-        type: "BadRequest",
+        type: 'BadRequest',
       });
     }
     return user;
@@ -97,14 +102,14 @@ class UserService {
       { _id: new Bson.ObjectId(id) },
     );
     if (!user) {
-      log.error("User not found");
+      log.error('User not found');
       return throwError({
         status: Status.NotFound,
-        name: "NotFound",
-        path: "user",
-        param: "user",
+        name: 'NotFound',
+        path: 'user',
+        param: 'user',
         message: `User not found`,
-        type: "NotFound",
+        type: 'NotFound',
       });
     }
     const { name, email, role, isDisabled, createdAt, updatedAt } = user;
@@ -127,40 +132,40 @@ class UserService {
       { _id: new Bson.ObjectId(id) },
     );
     if (!user) {
-      log.error("User not found");
+      log.error('User not found');
       return throwError({
         status: Status.NotFound,
-        name: "NotFound",
-        path: "user",
-        param: "user",
+        name: 'NotFound',
+        path: 'user',
+        param: 'user',
         message: `User not found`,
-        type: "NotFound",
+        type: 'NotFound',
       });
     }
     const { isDisabled, name, email, role } = options;
     const userRights: string[] = roleRights.get(state.role);
-    if (state.id !== id && !userRights.includes("manageUsers")) {
+    if (state.id !== id && !userRights.includes(PermissionList.MANAGE_USERS)) {
       return throwError({
         status: Status.Forbidden,
-        name: "Forbidden",
+        name: 'Forbidden',
         path: `access_token`,
         param: `access_token`,
         message: `Insufficient rights`,
-        type: "Forbidden",
+        type: 'Forbidden',
       });
     }
-    const roleTobeChanged = roles.indexOf(role as string);
+    const roleTobeChanged = rolesRank.indexOf(role as Role);
     if (
-      (roleTobeChanged > roles.indexOf(user.role)) &&
-      (roles.indexOf(state.role) < roleTobeChanged)
+      (roleTobeChanged > rolesRank.indexOf(<Role> user.role)) &&
+      (rolesRank.indexOf(<Role> state.role) < roleTobeChanged)
     ) {
       return throwError({
         status: Status.Forbidden,
-        name: "Forbidden",
+        name: 'Forbidden',
         path: `access_token`,
         param: `access_token`,
         message: `Cannot change role to higher`,
-        type: "Forbidden",
+        type: 'Forbidden',
       });
     }
     if (email) {
@@ -169,14 +174,14 @@ class UserService {
         _id: { $ne: id },
       });
       if (userExists) {
-        log.error("User already exists");
+        log.error('User already exists');
         return throwError({
           status: Status.Conflict,
-          name: "Conflict",
-          path: "user",
-          param: "user",
+          name: 'Conflict',
+          path: 'user',
+          param: 'user',
           message: `User already exists`,
-          type: "Conflict",
+          type: 'Conflict',
         });
       }
     }
@@ -218,11 +223,11 @@ class UserService {
     } else {
       return throwError({
         status: Status.BadRequest,
-        name: "BadRequest",
-        path: "user",
-        param: "user",
+        name: 'BadRequest',
+        path: 'user',
+        param: 'user',
         message: `Could not update user`,
-        type: "BadRequest",
+        type: 'BadRequest',
       });
     }
 
@@ -239,14 +244,14 @@ class UserService {
       { _id: new Bson.ObjectId(id) },
     );
     if (!user) {
-      log.error("User not found");
+      log.error('User not found');
       return throwError({
         status: Status.NotFound,
-        name: "NotFound",
-        path: "user",
-        param: "user",
+        name: 'NotFound',
+        path: 'user',
+        param: 'user',
         message: `User not found`,
-        type: "NotFound",
+        type: 'NotFound',
       });
     }
     const deleteCount: number = await User.deleteOne({
@@ -271,11 +276,11 @@ class UserService {
     } else {
       return throwError({
         status: Status.BadRequest,
-        name: "BadRequest",
-        path: "user",
-        param: "user",
+        name: 'BadRequest',
+        path: 'user',
+        param: 'user',
         message: `Could not delete user`,
-        type: "BadRequest",
+        type: 'BadRequest',
       });
     }
     return deleteCount;

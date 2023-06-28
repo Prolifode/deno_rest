@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["deno.ns", "deno.unstable"],
+    "strict": true
+  },
+  "fmt": {
+    "options": {
+      "singleQuote": true,
+      "lineWidth": 80,
+      "semiColons": true,
+      "useTabs": false,
+      "indentWidth": 2,
+      "proseWrap": "always"
+    }
+  }
+}
