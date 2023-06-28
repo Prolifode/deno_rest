@@ -99,7 +99,7 @@ class TokenService {
     type: string,
   ): Promise<TokenSchema | Error> {
     // deno-lint-ignore no-explicit-any
-    const payload: any = await JwtHelper.getJwtPayload(token);
+    const payload: any = await JwtHelper.getJwtPayload(token, type);
     const tokenDoc = await Token.findOne(
       { token, type, user: payload.id, blacklisted: false },
     );

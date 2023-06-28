@@ -37,18 +37,25 @@ class JwtHelper {
   /**
    * Validates JWT and returns JWT payload
    * @param token
+   * @param type
    * @returns Promise<Payload | Error> Returns JWT payload
    */
-  public static async getJwtPayload(token: string): Promise<Payload | Error> {
+  public static async getJwtPayload(
+    token: string,
+    type = 'access_token',
+  ): Promise<Payload | Error> {
     try {
       return await verify(token, key);
     } catch (_e) {
+      const tokenType = (type === 'access_token')
+        ? 'access_token'
+        : 'refresh_token';
       return throwError({
         status: Status.Unauthorized,
         name: 'Unauthorized',
-        path: 'access_token',
-        param: 'access_token',
-        message: `access_token is expired`,
+        path: tokenType,
+        param: tokenType,
+        message: `${tokenType} is invalid`,
         type: 'Unauthorized',
       });
     }
