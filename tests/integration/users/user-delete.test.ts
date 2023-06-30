@@ -41,6 +41,23 @@ describe('Users endpoints DELETE', () => {
       expect(typeof dbUser).toBe('undefined');
     });
 
+    it('should be able to re create user upon deletion', async () => {
+      const adminId = await createUser(admin);
+      const userId = await createUser(user);
+      const token = await generateAccessToken(adminId);
+      const request = await superoak(app);
+      await request.delete(`/api/users/${userId}`)
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204);
+      const dbUser = await User.findOne(
+        { _id: new Bson.ObjectId(userId) },
+      );
+      const dupUserId = await createUser(user);
+      expect(typeof dbUser).toBe('undefined');
+      expect(typeof dupUserId).toBeDefined();
+    });
+
     it('should allow user to delete self', async () => {
       const userId = await createUser(user);
       const token = await generateAccessToken(userId);

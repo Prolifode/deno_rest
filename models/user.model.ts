@@ -1,4 +1,5 @@
 import db from '../db/db.ts';
+import type { CreateIndexOptions } from '../deps.ts';
 
 export interface UserSchema {
   _id: string;
@@ -13,3 +14,15 @@ export interface UserSchema {
 }
 
 export const User = db.getDatabase.collection<UserSchema>('users');
+
+const indexOptions: CreateIndexOptions = {
+  indexes: [{
+    key: {
+      email: 'text',
+    },
+    name: 'emailUniqueKey',
+    unique: true,
+  }],
+};
+
+await User.createIndexes(indexOptions);

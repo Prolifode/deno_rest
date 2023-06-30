@@ -6,6 +6,8 @@ import config from '../../config/config.ts';
 import JwtHelper from '../../helpers/jwt.helper.ts';
 
 export const clearCollection = async (collection: string) => {
+  const _collection = db.getDatabase.collection(collection);
+  await _collection.dropIndexes({ index: '*' });
   return await db.getDatabase.collection(collection).deleteMany({});
 };
 
