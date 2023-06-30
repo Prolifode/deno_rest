@@ -32,9 +32,9 @@
  */
 import { Role } from '../config/roles.ts';
 import type { RouterContext } from '../deps.ts';
+import { Status } from '../deps.ts';
 import log from '../middlewares/logger.middleware.ts';
 import UserService from '../services/user.service.ts';
-import { Status } from '../deps.ts';
 
 class UserController {
   /**
@@ -137,10 +137,15 @@ class UserController {
   ): Promise<void> {
     const { id } = params;
     log.debug('Removing user');
-    const deleteCount: number | Error = await UserService.removeUser(
-      id as string,
-    );
-    response.body = { deleted: deleteCount };
+    try {
+      await UserService.removeUser(
+        id as string,
+      );
+      response.status = Status.NoContent;
+    } catch (e) {
+      response.body = e;
+      response.status = e.status;
+    }
   }
 }
 

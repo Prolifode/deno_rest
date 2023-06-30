@@ -1,26 +1,121 @@
-import { roleRights } from '../config/roles.ts';
+import {
+  PermissionList,
+  Role,
+  ROLE_RIGHTS,
+  ROLES_WITH_USER_MANAGEMENT_OVERRIDE,
+} from '../config/roles.ts';
 import { RouterMiddleware, Status } from '../deps.ts';
 import type { RouterContext } from '../deps.ts';
 import JwtHelper from '../helpers/jwt.helper.ts';
 import UserService from '../services/user.service.ts';
 import type { UserStructure } from '../types/types.interface.ts';
 import { throwError } from './errorHandler.middleware.ts';
+
 /**
- * Check user Rights
+ * Check if user has required rights
+ * @param requiredRights
+ * @param userRights
+ * @returns boolean
+ */
+const hasRequiredRights = (
+  requiredRights: string[],
+  userRights: string[],
+): boolean => {
+  return requiredRights.some((requiredRight) =>
+    userRights.includes(requiredRight)
+  );
+};
+
+/**
+ * Check if user has "MANAGE_SELF" right and the ID matches the user ID
  * @param requiredRights
  * @param user
- * @returns boolean | Error Returns if user has sufficient rights
+ * @param userIdFromPayload
+ * @returns boolean
  */
-const checkRights = (
+const hasManageSelfRights = (
   requiredRights: string[],
   user: UserStructure,
-): boolean | Error => {
-  if (requiredRights.length) {
-    const userRights = roleRights.get(user.role);
-    const hasRequiredRights = requiredRights.some((requiredRight) =>
-      userRights.includes(requiredRight)
+  userIdFromPayload: string,
+): boolean => {
+  const hasManageSelfRight = requiredRights.includes(
+    PermissionList.MANAGE_USERS,
+  );
+  return !(hasManageSelfRight && userIdFromPayload &&
+    user.id !== userIdFromPayload &&
+    ROLES_WITH_USER_MANAGEMENT_OVERRIDE.indexOf(user.role as Role) < 0);
+};
+
+/**
+ * Extract JWT from Authorization header
+ * @param header
+ * @returns string | null
+ */
+const extractJwt = (header: string | null): string | null => {
+  if (!header || !header.includes('Bearer')) {
+    return null;
+  }
+  return header.split('Bearer ')[1];
+};
+
+export const auth =
+  <Path extends string>(requiredRights: string[]): RouterMiddleware<Path> =>
+  async (
+    ctx: RouterContext<Path>,
+    next: () => Promise<unknown>,
+  ): Promise<Error | void> => {
+    const JWT: string | null = extractJwt(
+      ctx.request.headers.get('Authorization'),
     );
-    if (!hasRequiredRights) {
+
+    if (!JWT) {
+      return throwError({
+        status: Status.Unauthorized,
+        name: 'Unauthorized',
+        path: `access_token`,
+        param: `access_token`,
+        message: `access_token is required`,
+        type: 'Unauthorized',
+      });
+    }
+
+    const data: { id: string } | Error = await JwtHelper.getJwtPayload(JWT) as {
+      id: string;
+    } | Error;
+
+    if (data instanceof Error) {
+      return throwError({
+        status: Status.Unauthorized,
+        name: 'Unauthorized',
+        path: `access_token`,
+        param: `access_token`,
+        message: `access_token is invalid`,
+        type: 'Unauthorized',
+      });
+    }
+
+    const user: UserStructure | Error = await UserService.getUser(data.id);
+
+    if (user instanceof Error) {
+      return throwError({
+        status: Status.Unauthorized,
+        name: 'Unauthorized',
+        path: `access_token`,
+        param: `access_token`,
+        message: `User not found`,
+        type: 'Unauthorized',
+      });
+    }
+
+    const userRights = ROLE_RIGHTS.get(user.role);
+    const hasRight: boolean = hasRequiredRights(requiredRights, userRights);
+    const isSelfManaged: boolean = hasManageSelfRights(
+      requiredRights,
+      user,
+      ctx.params?.id || '',
+    );
+
+    if (!hasRight || !isSelfManaged) {
       return throwError({
         status: Status.Forbidden,
         name: 'Forbidden',
@@ -30,53 +125,7 @@ const checkRights = (
         type: 'Forbidden',
       });
     }
-  }
-  return true;
-};
 
-/**
- * Auth Middleware
- * @param requiredRights
- * @returns Promise<void>
- */
-export const auth =
-  <Path extends string>(requiredRights: string[]): RouterMiddleware<Path> =>
-  async (
-    ctx: RouterContext<Path>,
-    next: () => Promise<unknown>,
-  ): Promise<void> => {
-    let JWT: string;
-    const jwt: string = ctx.request.headers.get('Authorization')
-      ? ctx.request.headers.get('Authorization')!
-      : '';
-    if (jwt && jwt.includes('Bearer')) {
-      JWT = jwt.split('Bearer ')[1];
-      // deno-lint-ignore no-explicit-any
-      const data: any | Error = await JwtHelper.getJwtPayload(JWT);
-      if (data) {
-        const user: UserStructure | Error = await UserService.getUser(data.id);
-        if (user && checkRights(requiredRights, user as UserStructure)) {
-          ctx.state = user;
-        }
-      } else {
-        throwError({
-          status: Status.Unauthorized,
-          name: 'Unauthorized',
-          path: `access_token`,
-          param: `access_token`,
-          message: `access_token is invalid`,
-          type: 'Unauthorized',
-        });
-      }
-    } else {
-      throwError({
-        status: Status.Unauthorized,
-        name: 'Unauthorized',
-        path: `access_token`,
-        param: `access_token`,
-        message: `access_token is required`,
-        type: 'Unauthorized',
-      });
-    }
+    ctx.state = user;
     await next();
   };

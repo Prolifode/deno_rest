@@ -15,7 +15,7 @@ import {
 } from '../../utils/utils.ts';
 import { User } from '../../../models/user.model.ts';
 import { admin, user, user2 } from '../../fixtures/users.fixtures.ts';
-import { Role, rolesRank } from '../../../config/roles.ts';
+import { Role, ROLES_RANK } from '../../../config/roles.ts';
 
 describe('Users endpoints POST', () => {
   beforeEach(async () => {
@@ -268,7 +268,7 @@ describe('Users endpoints POST', () => {
       expect(response.status).toBe(400);
       expect(dbUsers.length).toBe(0);
       expect(response.body.message).toBe(
-        `role must be one of the following values: ${rolesRank.join(', ')}`,
+        `role must be one of the following values: ${ROLES_RANK.join(', ')}`,
       );
       expect(response.body.name).toBe('ValidationError');
       expect(response.body.path).toBe('role');

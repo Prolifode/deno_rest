@@ -1,4 +1,4 @@
-import { Context, State, Status } from '../deps.ts';
+import { Context, State, Status, yup } from '../deps.ts';
 import type { Err } from '../types/types.interface.ts';
 
 /**
@@ -24,10 +24,20 @@ export const errorHandler = async (
   try {
     await next();
   } catch (err) {
-    const { message, name, path, type } = err;
-    const status = err.status || err.statusCode || Status.InternalServerError;
+    if (err instanceof yup.ValidationError) {
+      ctx.response.status = Status.BadRequest;
+      const { errors, message } = err;
+      ctx.response.body = {
+        message,
+        errors,
+        status: Status.BadRequest,
+      };
+    } else {
+      const { message, name, path, type } = err;
+      const status = err.status || err.statusCode || Status.InternalServerError;
 
-    ctx.response.status = status;
-    ctx.response.body = { message, name, path, type, status };
+      ctx.response.status = status;
+      ctx.response.body = { message, name, path, type, status };
+    }
   }
 };

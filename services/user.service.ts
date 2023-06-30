@@ -16,8 +16,8 @@ import type {
 import {
   PermissionList,
   Role,
-  roleRights,
-  rolesRank,
+  ROLE_RIGHTS,
+  ROLES_RANK,
 } from '../config/roles.ts';
 
 class UserService {
@@ -143,7 +143,7 @@ class UserService {
       });
     }
     const { isDisabled, name, email, role } = options;
-    const userRights: string[] = roleRights.get(state.role);
+    const userRights: string[] = ROLE_RIGHTS.get(state.role);
     if (state.id !== id && !userRights.includes(PermissionList.MANAGE_USERS)) {
       return throwError({
         status: Status.Forbidden,
@@ -154,10 +154,10 @@ class UserService {
         type: 'Forbidden',
       });
     }
-    const roleTobeChanged = rolesRank.indexOf(role as Role);
+    const roleTobeChanged = ROLES_RANK.indexOf(role as Role);
     if (
-      (roleTobeChanged > rolesRank.indexOf(<Role> user.role)) &&
-      (rolesRank.indexOf(<Role> state.role) < roleTobeChanged)
+      (roleTobeChanged > ROLES_RANK.indexOf(<Role> user.role)) &&
+      (ROLES_RANK.indexOf(<Role> state.role) < roleTobeChanged)
     ) {
       return throwError({
         status: Status.Forbidden,
@@ -240,9 +240,24 @@ class UserService {
    * @returns Promise<number | Error Returns deleted count
    */
   public static async removeUser(id: string): Promise<number | Error> {
-    const user: UserSchema | undefined = await User.findOne(
-      { _id: new Bson.ObjectId(id) },
-    );
+    let user: UserSchema | undefined;
+    try {
+      user = await User.findOne(
+        { _id: new Bson.ObjectId(id) },
+      );
+    } catch (e) {
+      log.error(e);
+      return throwError({
+        status: Status.BadRequest,
+        name: 'BadRequest',
+        path: 'id',
+        param: 'id',
+        message:
+          'Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer',
+        type: 'BadRequest',
+      });
+    }
+
     if (!user) {
       log.error('User not found');
       return throwError({

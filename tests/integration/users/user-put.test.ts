@@ -15,7 +15,7 @@ import {
 } from '../../utils/utils.ts';
 import { User } from '../../../models/user.model.ts';
 import { admin, user, user2 } from '../../fixtures/users.fixtures.ts';
-import { Role, rolesRank } from '../../../config/roles.ts';
+import { Role, ROLES_RANK } from '../../../config/roles.ts';
 
 describe('Users endpoints PUT', () => {
   beforeEach(async () => {
@@ -133,7 +133,7 @@ describe('Users endpoints PUT', () => {
       const userId = await createUser(user);
       const token = await generateAccessToken(adminId);
       const updateData = {
-        role: rolesRank[0],
+        role: ROLES_RANK[0],
       };
 
       const request = await superoak(app);
