@@ -60,3 +60,10 @@ export interface JwtPayload {
   id: string;
   exp: number;
 }
+
+export interface ICustomError extends Error {
+  status?: number;
+  statusCode?: number;
+  path?: string;
+  type?: string;
+}

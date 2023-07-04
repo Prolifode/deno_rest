@@ -1,5 +1,6 @@
-import { Context, State, Status, yup } from '../deps.ts';
-import type { Err } from '../types/types.interface.ts';
+import { Context, State, Status } from '../deps.ts';
+import type { Err, ICustomError } from '../types/types.interface.ts';
+import log from './logger.middleware.ts';
 
 /**
  * Throws Error with provided params
@@ -17,26 +18,25 @@ export const throwError = (options: Err): Error => {
  * @returns Promise<void>
  */
 export const errorHandler = async (
-  // deno-lint-ignore no-explicit-any
-  ctx: Context<State, Record<string, any>>,
+  ctx: Context<State, Record<string, unknown>>,
   next: () => Promise<unknown>,
 ): Promise<void> => {
   try {
     await next();
   } catch (err) {
-    if (err instanceof yup.ValidationError) {
-      ctx.response.status = Status.BadRequest;
-      const { errors, message } = err;
-      ctx.response.body = {
-        message,
-        errors,
-        status: Status.BadRequest,
-      };
-    } else {
-      const { message, name, path, type } = err;
-      const status = err.status || err.statusCode || Status.InternalServerError;
+    const error: ICustomError = err;
+    const status: number = error.status || error.statusCode ||
+      Status.InternalServerError;
+    const message: string = error.message || 'An error occurred';
+    const name: string = error.name || 'Error';
+    const path: string = error.path || 'Unknown path';
+    const type: string = error.type || 'Unknown type';
 
-      ctx.response.status = status;
+    ctx.response.status = status;
+    log.error(error);
+    if (Deno.env.get('ENV') === 'production') {
+      ctx.response.body = { message, status };
+    } else {
       ctx.response.body = { message, name, path, type, status };
     }
   }
