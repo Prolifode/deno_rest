@@ -4,7 +4,7 @@ services:
   deno-rest:
     container_name: deno-rest-test
     environment:
-      MONGO_URI: mongodb://mongo:27017/deno_rest_test
+      MONGO_URI: $MONGO_URI
       APP_NAME: $APP_NAME
       JWT_ACCESS_TOKEN_EXP: $JWT_ACCESS_TOKEN_EXP
       JWT_REFRESH_TOKEN_EXP: $JWT_REFRESH_TOKEN_EXP

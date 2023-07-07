@@ -1,12 +1,19 @@
 import { CreateUserStructure } from '../../types/types.interface.ts';
 import HashHelper from '../../helpers/hash.helper.ts';
 import { User } from '../../models/user.model.ts';
+import log from '../../middlewares/logger.middleware.ts';
 import db from '../../db/db.ts';
 import config from '../../config/config.ts';
 import JwtHelper from '../../helpers/jwt.helper.ts';
 
 export const clearCollection = async (collection: string) => {
-  return await db.getDatabase.collection(collection).deleteMany({});
+  const _collection = db.getDatabase.collection(collection);
+  try {
+    await _collection.dropIndexes({ index: '*' });
+  } catch (e) {
+    log.error(e);
+  }
+  return await _collection.deleteMany({});
 };
 
 export const createUser = async (user: CreateUserStructure) => {

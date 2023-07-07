@@ -2,6 +2,7 @@ export type { Document } from 'mongo/mod.ts';
 export type { Header, Payload } from 'djwt/mod.ts';
 export type { RouterContext, RouterMiddleware, State } from 'oak/mod.ts';
 export type { DenonConfig } from 'denon/mod.ts';
+export type { CreateIndexOptions } from 'mongo/mod.ts';
 
 import * as yup from 'yup';
 export { compare, genSalt, hash } from 'bcrypt/mod.ts';
