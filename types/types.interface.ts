@@ -54,9 +54,9 @@ export interface Err {
   type: string;
 }
 
-export interface JwtPayload {
-  iss: string;
-  iat: number;
-  id: string;
-  exp: number;
+export interface ICustomError extends Error {
+  status?: number;
+  statusCode?: number;
+  path?: string;
+  type?: string;
 }
