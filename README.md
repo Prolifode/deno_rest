@@ -61,7 +61,7 @@ Deno's http server, and deno_mongo is a MongoDB driver for Deno.
 
 To get started with this project, you first need to have Deno installed. If you
 haven't installed it already, you can follow the official
-[Installation Guide](https://deno.com/manual@v1.34.3/getting_started/installation#installation).
+[Installation Guide](https://deno.com/manual@v1.35.0/getting_started/installation#installation).
 
 ### Environment Variables
 
