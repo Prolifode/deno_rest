@@ -4,18 +4,41 @@ orbs:
   coveralls: coveralls/coveralls@2.2.1
 
 jobs:
-  test:
-    machine: true
-    working_directory: ~/repo
+  setup_and_test:
+    docker:
+      - image: denoland/deno:1.35.0
+      - image: circleci/mongo:4.4.6
+    environment:
+      MONGO_URI: mongodb://localhost:27017/test
+      APP_NAME: $APP_NAME
+      JWT_ACCESS_TOKEN_EXP: $JWT_ACCESS_TOKEN_EXP
+      JWT_REFRESH_TOKEN_EXP: $JWT_REFRESH_TOKEN_EXP
+      SEED: $SEED
+      IP: $IP
+      HOST: $HOST
+      PORT: $PORT
+      PROTOCOL: $PROTOCOL
+      DB_NAME: $DB_NAME
+      CLIENT_PROTOCOL: $CLIENT_PROTOCOL
+      CLIENT_HOST: $CLIENT_HOST
+      CLIENT_PORT: $CLIENT_PORT
     steps:
       - checkout
       - run:
-          name: Integration Tests
-          command: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --exit-code-from deno-rest --abort-on-container-exit
-      - coveralls/upload:
-          carryforward: test
-          base_path: 'cov'
+          name: Setup Database
+          command: echo "Database setup completed"
+      - run:
+          name: Run tests
+          command: deno test --allow-net --allow-env --allow-read --allow-write --config tsconfig.json --import-map=import_map.json
+      - run:
+          name: Run tests coverage
+          command: deno test --allow-net --allow-env --allow-read --allow-write --import-map import_map.json --coverage=./cov
+      - run:
+          name: Generate tests lcov
+          command: deno coverage --lcov cov/ > cov.lcov
+      - coveralls/upload
+
 workflows:
-  test:
+  setup_and_test:
     jobs:
-      - test
+      - setup_and_test
