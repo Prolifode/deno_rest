@@ -8,16 +8,12 @@ executors:
     docker:
       - image: denoland/deno:1.35.0
       - image: circleci/mongo:4.4.6
-        environment:
-          MONGO_INITDB_ROOT_USERNAME: dev
-          MONGO_INITDB_ROOT_PASSWORD: Password1
-        command: [mongod, --replSet, rs0]
 
 jobs:
   test:
     executor: deno-executor
     environment:
-      MONGO_URI: mongodb://dev:Password1@localhost:27017/deno-rest-test
+      MONGO_URI: mongodb://localhost:27017/deno-rest-test
       APP_NAME: $APP_NAME
       JWT_ACCESS_TOKEN_EXP: $JWT_ACCESS_TOKEN_EXP
       JWT_REFRESH_TOKEN_EXP: $JWT_REFRESH_TOKEN_EXP
