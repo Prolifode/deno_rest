@@ -8,8 +8,16 @@ executors:
     docker:
       - image: denoland/deno:1.35.0
       - image: circleci/mongo:4.4.6
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: dev
+          MONGO_INITDB_ROOT_PASSWORD: Password1
+        command: [mongod, --replSet, rs0]
+
+jobs:
+  test:
+    executor: deno-executor
     environment:
-      MONGO_URI: mongodb://circleci/mongo:4.4.6/test
+      MONGO_URI: mongodb://dev:Password1@localhost:27017/deno-rest-test
       APP_NAME: $APP_NAME
       JWT_ACCESS_TOKEN_EXP: $JWT_ACCESS_TOKEN_EXP
       JWT_REFRESH_TOKEN_EXP: $JWT_REFRESH_TOKEN_EXP
@@ -29,7 +37,7 @@ executors:
           command: |
             echo "Waiting for MongoDB to start..."
             for i in {1..30}; do
-              if nc -z circleci/mongo:4.4.6 27017; then
+              if nc -z localhost 27017; then
                 echo "MongoDB is up!"
                 exit 0
               fi
