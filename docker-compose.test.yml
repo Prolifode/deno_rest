@@ -17,4 +17,4 @@ services:
       CLIENT_PROTOCOL: $CLIENT_PROTOCOL
       CLIENT_HOST: $CLIENT_HOST
       CLIENT_PORT: $CLIENT_PORT
-    command: denon test --lock=deno.lock
+    command: denon test:cov
