@@ -52,7 +52,7 @@ jobs:
           name: Generate tests lcov
           command: deno coverage --lcov cov/ > cov.lcov
       - coveralls/upload:
-          path_to_lcov: ./cov.lcov
+          coverage_file: ./cov.lcov
 
 workflows:
   test_and_coverage:
