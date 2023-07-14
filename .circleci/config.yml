@@ -8,12 +8,8 @@ executors:
     docker:
       - image: denoland/deno:1.35.0
       - image: circleci/mongo:4.4.6
-
-jobs:
-  test:
-    executor: deno-executor
     environment:
-      MONGO_URI: mongodb://localhost:27017/test
+      MONGO_URI: mongodb://circleci/mongo:4.4.6/test
       APP_NAME: $APP_NAME
       JWT_ACCESS_TOKEN_EXP: $JWT_ACCESS_TOKEN_EXP
       JWT_REFRESH_TOKEN_EXP: $JWT_REFRESH_TOKEN_EXP
@@ -33,7 +29,7 @@ jobs:
           command: |
             echo "Waiting for MongoDB to start..."
             for i in {1..30}; do
-              if nc -z localhost 27017; then
+              if nc -z circleci/mongo:4.4.6 27017; then
                 echo "MongoDB is up!"
                 exit 0
               fi
@@ -52,7 +48,7 @@ jobs:
           name: Generate tests lcov
           command: deno coverage --lcov cov/ > cov.lcov
       - coveralls/upload:
-          coverage_file: ./cov.lcov
+          path_to_lcov_file: ./cov.lcov
 
 workflows:
   test_and_coverage:
