@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["deno.ns", "deno.unstable"],
+    "lib": ["dom","deno.ns", "deno.unstable"],
     "strict": true
   },
   "fmt": {

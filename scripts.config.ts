@@ -29,14 +29,24 @@ const config: DenonConfig = {
       tsconfig: 'tsconfig.json',
     },
     'test:cov': {
-      cmd: 'deno test --coverage=./cov --import-map=import_map.json',
+      cmd: 'deno test --coverage=./cov',
       desc: 'Test Coverage',
       unstable: false,
       env: {
         ENV: 'test',
       },
       watch: false,
-      tsconfig: 'tsconfig.json',
+      importMap: 'import_map.json',
+    },
+    'coveralls': {
+      cmd: 'deno coverage --lcov cov/ > cov.lcov',
+      desc: 'store collected coverage as a .lcov file which integrates well with services such as Codecov, Coveralls and Travis CI',
+      unstable: false,
+      env: {
+        ENV: 'test',
+      },
+      watch: false,
+      allow: []
     },
     prod: {
       cmd: 'deno run --import-map=import_map.json app.bundle.js',
