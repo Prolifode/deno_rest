@@ -25,6 +25,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install MongoDB shell
+          command: |
+            apt-get update -y
+            apt-get install -y mongodb-clients
+      - run:
           name: Setup Database
           command: echo "Database setup completed"
       - run:
