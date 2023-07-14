@@ -28,6 +28,14 @@ jobs:
           name: Setup Database
           command: echo "Database setup completed"
       - run:
+          name: Wait for MongoDB
+          command: |
+            echo "Waiting for MongoDB..."
+            until mongo --eval "db.adminCommand('ping')"; do
+              sleep 1
+            done
+            echo "MongoDB is up and running!"
+      - run:
           name: Run tests
           command: deno test --allow-net --allow-env --allow-read --allow-write --config tsconfig.json --import-map=import_map.json
       - run:
