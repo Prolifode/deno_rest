@@ -25,18 +25,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install MongoDB shell
-          command: |
-            apt-get update -y
-            apt-get install -y mongodb-clients
-      - run:
           name: Setup Database
           command: echo "Database setup completed"
       - run:
           name: Wait for MongoDB
           command: |
             echo "Waiting for MongoDB..."
-            until mongo --eval "db.adminCommand('ping')"; do
+            until nc -z localhost 27017; do
               sleep 1
             done
             echo "MongoDB is up and running!"
