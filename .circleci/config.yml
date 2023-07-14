@@ -3,11 +3,15 @@ version: 2.1
 orbs:
   coveralls: coveralls/coveralls@2.2.1
 
-jobs:
-  setup_and_test:
+executors:
+  deno-executor:
     docker:
       - image: denoland/deno:1.35.0
       - image: circleci/mongo:4.4.6
+
+jobs:
+  test:
+    executor: deno-executor
     environment:
       MONGO_URI: mongodb://localhost:27017/test
       APP_NAME: $APP_NAME
@@ -25,16 +29,19 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Setup Database
-          command: echo "Database setup completed"
-      - run:
           name: Wait for MongoDB
           command: |
-            echo "Waiting for MongoDB..."
-            until nc -z localhost 27017; do
+            echo "Waiting for MongoDB to start..."
+            for i in {1..30}; do
+              if nc -z localhost 27017; then
+                echo "MongoDB is up!"
+                exit 0
+              fi
+              echo "Waiting..."
               sleep 1
             done
-            echo "MongoDB is up and running!"
+            echo "MongoDB did not start within 30 seconds."
+            exit 1
       - run:
           name: Run tests
           command: deno test --allow-net --allow-env --allow-read --allow-write --config tsconfig.json --import-map=import_map.json
@@ -44,9 +51,10 @@ jobs:
       - run:
           name: Generate tests lcov
           command: deno coverage --lcov cov/ > cov.lcov
-      - coveralls/upload
+      - coveralls/upload:
+          path_to_lcov: ./cov.lcov
 
 workflows:
-  setup_and_test:
+  test_and_coverage:
     jobs:
-      - setup_and_test
+      - test
