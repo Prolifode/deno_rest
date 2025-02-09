@@ -3,6 +3,7 @@
     "lib": ["deno.ns", "deno.unstable"],
     "strict": true
   },
+  "importMap": "import_map.json",
   "fmt": {
     "options": {
       "singleQuote": true,
