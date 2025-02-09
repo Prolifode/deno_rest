@@ -35,8 +35,8 @@ class AuthController {
   public static async login(
     { request, response }: RouterContext<string>,
   ): Promise<void> {
-    const body = request.body();
-    const { email, password } = await body.value;
+    const body = request.body;
+    const { email, password } = await body.json();
     log.debug('Trying Login user');
     response.body = await AuthService.login({ email, password });
   }
@@ -53,8 +53,8 @@ class AuthController {
   public static async refreshTokens(
     { request, response }: RouterContext<string>,
   ): Promise<void> {
-    const body = request.body();
-    const { refreshToken } = await body.value;
+    const body = request.body;
+    const { refreshToken } = await body.json();
     log.debug('Getting refresh token');
     response.body = await AuthService.getRefreshToken(refreshToken);
   }
