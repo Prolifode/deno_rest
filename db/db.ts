@@ -3,7 +3,6 @@ import configs from '../config/config.ts';
 import { MongoClient } from '../deps.ts';
 import log from '../middlewares/logger.middleware.ts';
 import Seed from '../seed.ts';
-import { consoleSize } from 'https://deno.land/std@0.125.0/_deno_unstable.ts';
 
 const { dbName, mongoUrl, seed } = configs;
 
@@ -36,12 +35,13 @@ class Database {
     this.client = client;
     log.info('Database connected!');
 
-    const ev = setTimeout(async () => {
-      await new Seed().seedCollection();
-      log.info('All Seed done');
-      clearTimeout(ev);
-    }, 10);
-
+    if (seed) {
+      const ev = setTimeout(async () => {
+        await new Seed().seedCollection();
+        log.info('All Seed done');
+        clearTimeout(ev);
+      }, 10);
+    }
   }
 
   /**
