@@ -5,5 +5,3 @@ EXPOSE 9000
 WORKDIR /app/deno-rest
 COPY deno.lock .
 ADD . .
-
-RUN deno install
