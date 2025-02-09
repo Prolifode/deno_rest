@@ -11,7 +11,6 @@ const { dbName, mongoUrl, seed } = configs;
  */
 class Database {
   public client: MongoClient;
-  private seeder: Seed | null = null;
 
   /**
    * Constructor function for Database
@@ -22,7 +21,6 @@ class Database {
     this.dbName = dbName;
     this.url = url;
     this.client = {} as MongoClient;
-
   }
 
   /**
@@ -34,7 +32,6 @@ class Database {
     await client.connect(this.url);
     this.client = client;
     log.info('Database connected!');
-
     if (seed) {
       const ev = setTimeout(async () => {
         await new Seed().seedCollection();
