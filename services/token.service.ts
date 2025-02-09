@@ -135,7 +135,7 @@ class TokenService {
       });
     }
     const deleteCount: number = await Token.deleteOne(
-      { _id: new Bson.ObjectId(id) },
+      { _id: new Bson.ObjectId(id).toString() },
     );
     if (!deleteCount) {
       return throwError({

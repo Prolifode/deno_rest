@@ -42,7 +42,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(response.body) },
+        { _id: new Bson.ObjectId(response.body).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -76,7 +76,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(response.body) },
+        { _id: new Bson.ObjectId(response.body).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -109,7 +109,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -143,7 +143,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(response.body) },
+        { _id: new Bson.ObjectId(response.body).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -177,7 +177,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(response.body) },
+        { _id: new Bson.ObjectId(response.body).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -210,7 +210,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(response.body) },
+        { _id: new Bson.ObjectId(response.body).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -244,7 +244,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(403);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(user2Id) },
+        { _id: new Bson.ObjectId(user2Id).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(403);
@@ -276,7 +276,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -309,7 +309,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -342,7 +342,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(adminId) },
+        { _id: new Bson.ObjectId(adminId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -376,7 +376,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(403);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(adminId) },
+        { _id: new Bson.ObjectId(adminId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(403);
@@ -409,7 +409,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(403);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(user2Id) },
+        { _id: new Bson.ObjectId(user2Id).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(403);
@@ -441,7 +441,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(403);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(403);
@@ -474,7 +474,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(403);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(user2Id) },
+        { _id: new Bson.ObjectId(user2Id).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(403);
@@ -507,7 +507,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -540,7 +540,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(adminId) },
+        { _id: new Bson.ObjectId(adminId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);
@@ -573,7 +573,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(403);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(adminId) },
+        { _id: new Bson.ObjectId(adminId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(403);
@@ -605,7 +605,7 @@ describe('Users endpoints PUT', () => {
         .send(updateData)
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(adminId) },
+        { _id: new Bson.ObjectId(adminId).toString() },
       );
       expect(response.status).toBe(200);
       expect(typeof response.body).toBe('object');

@@ -36,7 +36,7 @@ describe('Users endpoints DELETE', () => {
         .set('Authorization', `Bearer ${token}`)
         .expect(204);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString() },
       );
       expect(typeof dbUser).toBe('undefined');
     });
@@ -51,7 +51,7 @@ describe('Users endpoints DELETE', () => {
         .set('Authorization', `Bearer ${token}`)
         .expect(204);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString().toString() },
       );
       const dupUserId = await createUser(user);
       expect(typeof dbUser).toBe('undefined');
@@ -67,7 +67,7 @@ describe('Users endpoints DELETE', () => {
         .set('Authorization', `Bearer ${token}`)
         .expect(204);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString() },
       );
       expect(typeof dbUser).toBe('undefined');
     });
