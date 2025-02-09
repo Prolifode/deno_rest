@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "start": "deno run --allow-env --allow-read --allow-net app.ts",
-    "start:watch": "deno run --watch --allow-env --allow-read --allow-net app.ts",
+    "start": "deno run --allow-env --allow-read --allow-net --lock=deno.lock app.ts",
+    "start:watch": "deno run --watch --allow-env --allow-read --allow-net --lock=deno.lock app.ts",
     "test": "deno test --env-file=environments/.env.test --allow-env --allow-read --allow-net",
     "test:cov": "deno test --coverage=./cov --env-file=environments/.env.test --allow-env --allow-read --allow-net",
     "format": "deno fmt",
