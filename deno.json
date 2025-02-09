@@ -1,6 +1,30 @@
 {
+  "tasks": {
+    "start": "deno run --allow-env --allow-read --allow-net --lock=deno.lock app.ts",
+    "start:watch": "deno run --watch --allow-env --allow-read --allow-net --lock=deno.lock app.ts",
+    "test": "deno test --env-file=environments/.env.test --allow-env --allow-read --allow-net --lock=deno.lock",
+    "test:cov": "deno test --coverage=./cov --env-file=environments/.env.test --allow-env --allow-read --allow-net --lock=deno.lock",
+    "format": "deno fmt",
+    "lint": "deno lint",
+    "seed": "deno --allow-read --allow-env --allow-write --allow-net seed.ts"
+  },
+  "imports": {
+    "@da/bcrypt": "jsr:@da/bcrypt@^1.0.1",
+    "@db/mongo": "jsr:@db/mongo@^0.33.0",
+    "@oak/oak": "jsr:@oak/oak@^17.1.4",
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/async": "jsr:@std/async@^1.0.10",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "@std/expect": "jsr:@std/expect@^1.0.13",
+    "@std/log": "jsr:@std/log@^0.224.14",
+    "@std/testing": "jsr:@std/testing@^1.0.9",
+    "@tajpouria/cors": "jsr:@tajpouria/cors@^1.2.1",
+    "@zaubrik/djwt": "jsr:@zaubrik/djwt@^3.0.2",
+    "supertest": "npm:supertest@^7.0.0",
+    "yup": "npm:yup@^1.6.1"
+  },
   "compilerOptions": {
-    "lib": ["deno.ns", "deno.unstable"],
+    "lib": ["deno.ns", "deno.unstable", "dom", "esnext"],
     "strict": true
   },
   "fmt": {

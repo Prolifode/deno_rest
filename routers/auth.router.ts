@@ -1,5 +1,5 @@
 import AuthController from '../controllers/auth.controller.ts';
-import { Router } from '../deps.ts';
+import { Router } from 'jsr:@oak/oak';
 import { validate } from '../middlewares/validate.middleware.ts';
 import {
   loginValidation,

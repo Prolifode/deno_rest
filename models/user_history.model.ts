@@ -1,8 +1,9 @@
 import db from '../db/db.ts';
+import { ObjectId } from 'jsr:@db/mongo';
 
 export interface UserHistorySchema {
-  _id?: string;
-  user: string;
+  _id?: ObjectId;
+  user: ObjectId;
   name?: string;
   email?: string;
   password?: string;

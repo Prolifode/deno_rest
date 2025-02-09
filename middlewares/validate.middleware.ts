@@ -1,7 +1,8 @@
 // deno-lint-ignore-file
 
-import { helpers, RouterContext, RouterMiddleware, Status } from '../deps.ts';
+import { RouterContext, RouterMiddleware, Status } from 'jsr:@oak/oak';
 import { throwError } from './errorHandler.middleware.ts';
+import getQueryHelper from '../helpers/getQuery.helper.ts';
 
 const validateParams = async (
   schema: any,
@@ -26,7 +27,9 @@ const validateParams = async (
     try {
       await schema.validate(payload, { stripUnknown: true, abortEarly: true });
     } catch (validationErrors) {
-      throw ({ ...validationErrors, status: Status.BadRequest });
+      throw (typeof validationErrors === 'object' && validationErrors !== null
+        ? { ...validationErrors, status: Status.BadRequest }
+        : { status: Status.BadRequest, message: String(validationErrors) });
     }
   } else if (payload && Object.keys(payload).length) {
     throwError({
@@ -43,8 +46,12 @@ const validateParams = async (
 export const validate =
   <Path extends string>(schema: any): RouterMiddleware<Path> =>
   async (ctx: RouterContext<Path>, next: () => any): Promise<void> => {
-    await validateParams(schema.body, await ctx.request.body().value, 'body');
+    await validateParams(
+      schema.body,
+      ctx.request.hasBody ? await ctx.request.body.json() : null,
+      'body',
+    );
     await validateParams(schema.params, ctx.params, 'param');
-    await validateParams(schema.queries, helpers.getQuery(ctx), 'query');
+    await validateParams(schema.queries, getQueryHelper(ctx), 'query');
     await next();
   };

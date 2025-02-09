@@ -1,4 +1,5 @@
-import { Application, oakCors } from './deps.ts';
+import { Application } from 'jsr:@oak/oak';
+import { oakCors } from 'jsr:@tajpouria/cors';
 import { errorHandler } from './middlewares/errorHandler.middleware.ts';
 import log from './middlewares/logger.middleware.ts';
 import configs from './config/config.ts';

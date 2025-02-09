@@ -1,4 +1,5 @@
-import { Bson, Status } from '../deps.ts';
+import { ObjectId } from 'jsr:@db/mongo';
+import { Status } from 'jsr:@oak/oak';
 import HashHelper from '../helpers/hash.helper.ts';
 import { throwError } from '../middlewares/errorHandler.middleware.ts';
 import log from '../middlewares/logger.middleware.ts';
@@ -24,11 +25,11 @@ class UserService {
   /**
    * Create user Service
    * @param options
-   * @returns Promise<string | Bson.ObjectId | Error> Returns Mongo Document of user or error
+   * @returns Promise<string | ObjectId | Error> Returns Mongo Document of user or error
    */
   public static async createUser(
     options: CreateUserStructure,
-  ): Promise<string | Bson.ObjectId | Error> {
+  ): Promise<string | ObjectId | Error> {
     const { name, email, password, role, isDisabled } = options;
     const userExists: UserSchema | undefined = await User.findOne({ email });
     if (userExists) {
@@ -45,7 +46,7 @@ class UserService {
     const hashedPassword = await HashHelper.encrypt(password);
     const createdAt = new Date();
 
-    const user: string | Bson.ObjectId = await User.insertOne(
+    const user: string | ObjectId = await User.insertOne(
       {
         name,
         email,
@@ -60,7 +61,7 @@ class UserService {
     if (user) {
       await UserHistory.insertOne(
         {
-          user: user as string,
+          user: new ObjectId(user),
           name,
           email,
           password: hashedPassword,
@@ -86,10 +87,11 @@ class UserService {
 
   /**
    * Get users service
-   * @returns Promise<UserSchema[]> Returns Array of users documents
+   * @returns Promise<{users:UserSchema[]}> Returns Array of users documents
    */
-  public static getUsers(): Promise<UserSchema[]> {
-    return User.find().toArray();
+  public static async getUsers(): Promise<{ users: UserSchema[] }> {
+    const users = await User.find().toArray();
+    return { users };
   }
 
   /**
@@ -99,7 +101,7 @@ class UserService {
    */
   public static async getUser(id: string): Promise<UserStructure | Error> {
     const user: UserSchema | undefined = await User.findOne(
-      { _id: new Bson.ObjectId(id) },
+      { _id: new ObjectId(id) },
     );
     if (!user) {
       log.error('User not found');
@@ -129,7 +131,7 @@ class UserService {
     options: UpdateUserStructure,
   ): Promise<UpdatedStructure | Error> {
     const user: UserSchema | undefined = await User.findOne(
-      { _id: new Bson.ObjectId(id) },
+      { _id: new ObjectId(id) },
     );
     if (!user) {
       log.error('User not found');
@@ -171,7 +173,7 @@ class UserService {
     if (email) {
       const userExists: UserSchema | undefined = await User.findOne({
         email,
-        _id: { $ne: id },
+        _id: { $ne: new ObjectId(id) },
       });
       if (userExists) {
         log.error('User already exists');
@@ -194,7 +196,7 @@ class UserService {
       upsertedCount: number;
       matchedCount: number;
       modifiedCount: number;
-    } = await User.updateOne({ _id: new Bson.ObjectId(id) }, {
+    } = await User.updateOne({ _id: new ObjectId(id) }, {
       $set: {
         name,
         email,
@@ -206,7 +208,7 @@ class UserService {
     });
     if (result) {
       const user: UserHistorySchema = {
-        user: id,
+        user: new ObjectId(id),
         isDisabled: isDisabled === true,
         docVersion: newDocVersion,
       };
@@ -243,7 +245,7 @@ class UserService {
     let user: UserSchema | undefined;
     try {
       user = await User.findOne(
-        { _id: new Bson.ObjectId(id) },
+        { _id: new ObjectId(id) },
       );
     } catch (e) {
       log.error(e);
@@ -270,7 +272,7 @@ class UserService {
       });
     }
     const deleteCount: number = await User.deleteOne({
-      _id: new Bson.ObjectId(id),
+      _id: new ObjectId(id),
     });
     if (deleteCount) {
       const { name, email, role, isDisabled, createdAt, docVersion } = user;
@@ -278,7 +280,7 @@ class UserService {
       const updatedAt = new Date();
       await UserHistory.insertOne(
         {
-          user: id,
+          user: new ObjectId(id),
           name,
           email,
           role,

@@ -4,8 +4,8 @@ import {
   ROLE_RIGHTS,
   ROLES_WITH_USER_MANAGEMENT_OVERRIDE,
 } from '../config/roles.ts';
-import { RouterMiddleware, Status } from '../deps.ts';
-import type { RouterContext } from '../deps.ts';
+import { RouterMiddleware, Status } from 'jsr:@oak/oak';
+import type { RouterContext } from 'jsr:@oak/oak';
 import JwtHelper from '../helpers/jwt.helper.ts';
 import UserService from '../services/user.service.ts';
 import type { UserStructure } from '../types/types.interface.ts';
