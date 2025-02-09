@@ -44,7 +44,7 @@ const validateParams = async (
 export const validate =
   <Path extends string>(schema: any): RouterMiddleware<Path> =>
   async (ctx: RouterContext<Path>, next: () => any): Promise<void> => {
-    await validateParams(schema.body, ctx.request.body, 'body');
+    await validateParams(schema.body, ctx.request.hasBody ? await ctx.request.body.json() : null, 'body');
     await validateParams(schema.params, ctx.params, 'param');
     await validateParams(schema.queries, getQueryHelper(ctx), 'query');
     await next();
