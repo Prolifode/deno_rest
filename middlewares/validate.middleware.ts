@@ -1,6 +1,6 @@
 // deno-lint-ignore-file
 
-import { RouterContext, RouterMiddleware, Status } from '../deps.ts';
+import { RouterContext, RouterMiddleware, Status } from 'jsr:@oak/oak';
 import { throwError } from './errorHandler.middleware.ts';
 import getQueryHelper from '../helpers/getQuery.helper.ts';
 
@@ -46,7 +46,11 @@ const validateParams = async (
 export const validate =
   <Path extends string>(schema: any): RouterMiddleware<Path> =>
   async (ctx: RouterContext<Path>, next: () => any): Promise<void> => {
-    await validateParams(schema.body, ctx.request.hasBody ? await ctx.request.body.json() : null, 'body');
+    await validateParams(
+      schema.body,
+      ctx.request.hasBody ? await ctx.request.body.json() : null,
+      'body',
+    );
     await validateParams(schema.params, ctx.params, 'param');
     await validateParams(schema.queries, getQueryHelper(ctx), 'query');
     await next();

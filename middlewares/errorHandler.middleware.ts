@@ -1,4 +1,4 @@
-import { Context, State, Status } from '../deps.ts';
+import { Context, State, Status } from 'jsr:@oak/oak';
 import type { Err, ICustomError } from '../types/types.interface.ts';
 import log from './logger.middleware.ts';
 

@@ -1,5 +1,6 @@
-import { create, Status, verify } from '../deps.ts';
-import type { Header, Payload } from '../deps.ts';
+import type { Header, Payload } from 'jsr:@zaubrik/djwt';
+import { create, verify } from 'jsr:@zaubrik/djwt';
+import { Status } from 'jsr:@oak/oak';
 import { throwError } from '../middlewares/errorHandler.middleware.ts';
 
 const key = await crypto.subtle.generateKey(

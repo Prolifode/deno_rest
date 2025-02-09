@@ -1,4 +1,4 @@
-import { loadSync } from '../deps.ts';
+import { loadSync } from 'jsr:@std/dotenv';
 
 const env: string = Deno.env.get('ENV') || 'development';
 const envPath: string = `environments/.env.${env}`.toString();

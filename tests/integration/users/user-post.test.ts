@@ -1,18 +1,12 @@
-import {
-  afterAll,
-  beforeEach,
-  Bson,
-  describe,
-  expect,
-  it,
-  superoak,
-} from '../../../deps.ts';
-import { app } from '../../../app.ts';
+import { afterAll, beforeEach, describe, it } from 'jsr:@std/testing/bdd';
+import { expect } from '@std/expect';
 import {
   clearCollection,
   createUser,
   generateAccessToken,
+  withTestServer,
 } from '../../utils/utils.ts';
+import { ObjectId } from '@db/mongo';
 import { User } from '../../../models/user.model.ts';
 import { admin, user, user2 } from '../../fixtures/users.fixtures.ts';
 import { Role, ROLES_RANK } from '../../../config/roles.ts';
@@ -26,275 +20,313 @@ describe('Users endpoints POST', () => {
     await clearCollection('users');
   });
 
-  describe('POST users/', () => {
+  describe('POST /users', () => {
     it('should create user', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
+      await withTestServer(async (port) => {
+        // Create an admin user and generate an access token.
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(user)
-        .expect(201);
-      const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(response.body).toString() },
-      );
-      expect(typeof response.body).toBe('string');
-      expect(response.status).toBe(201);
-      expect(dbUser?.name).toBe(user.name);
-      expect(dbUser?.email).toBe(user.email);
-      expect(dbUser?.role).toBe(user.role);
-      expect(dbUser?.isDisabled).toBe(user.isDisabled);
-      expect(dbUser?.docVersion).toBe(1);
-      expect(dbUser?.createdAt).toBeDefined();
-      expect(dbUser?.updatedAt).toBeUndefined();
+        // Send a POST request to create a new user.
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(user),
+        });
+        expect(response.status).toBe(201);
+        const responseBody = await response.json();
+        expect(typeof responseBody).toBe('string');
+
+        // Retrieve the user from the database using the returned id.
+        const dbUser = await User.findOne({
+          _id: new ObjectId(responseBody),
+        });
+        expect(dbUser?.name).toBe(user.name);
+        expect(dbUser?.email).toBe(user.email);
+        expect(dbUser?.role).toBe(user.role);
+        expect(dbUser?.isDisabled).toBe(user.isDisabled);
+        expect(dbUser?.docVersion).toBe(1);
+        expect(dbUser?.createdAt).toBeDefined();
+        expect(dbUser?.updatedAt).toBeUndefined();
+      });
     });
 
     it('should conflict if user already exists in database', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(admin)
-        .expect(409);
-
-      const dbUsers = await User.find({ email: admin.email }).toArray();
-      expect(response.status).toBe(409);
-      expect(dbUsers.length).toBe(1);
-      expect(response.statusText).toBe('Conflict');
+        // Attempt to create a user that already exists.
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(admin),
+        });
+        expect(response.status).toBe(409);
+        await response.json();
+        const dbUsers = await User.find({ email: admin.email }).toArray();
+        expect(dbUsers.length).toBe(1);
+      });
     });
 
     it('should throw invalid name error', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
-      const invalidUser = { ...user };
-      invalidUser.name = '';
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
+        const invalidUser = { ...user, name: '' };
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(invalidUser)
-        .expect(400);
-
-      const dbUsers = await User.find({ email: invalidUser.email }).toArray();
-      expect(response.status).toBe(400);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe('name must be at least 1 characters');
-      expect(response.body.name).toBe('ValidationError');
-      expect(response.body.path).toBe('name');
-      expect(response.body.type).toBe('min');
-      expect(response.statusText).toBe('Bad Request');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(invalidUser),
+        });
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: invalidUser.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe('name must be at least 1 characters');
+        expect(responseBody.name).toBe('ValidationError');
+        expect(responseBody.path).toBe('name');
+        expect(responseBody.type).toBe('min');
+      });
     });
 
     it('should throw max name error', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
-      const invalidUser = { ...user };
-      invalidUser.name =
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
+        const invalidUser = { ...user };
+        invalidUser.name =
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(invalidUser)
-        .expect(400);
-
-      const dbUsers = await User.find({ email: invalidUser.email }).toArray();
-      expect(response.status).toBe(400);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe('name must be at most 255 characters');
-      expect(response.body.name).toBe('ValidationError');
-      expect(response.body.path).toBe('name');
-      expect(response.body.type).toBe('max');
-      expect(response.statusText).toBe('Bad Request');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(invalidUser),
+        });
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: invalidUser.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe(
+          'name must be at most 255 characters',
+        );
+        expect(responseBody.name).toBe('ValidationError');
+        expect(responseBody.path).toBe('name');
+        expect(responseBody.type).toBe('max');
+      });
     });
 
     it('should throw missing email error', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
-      const invalidUser = { ...user };
-      invalidUser.email = '';
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
+        const invalidUser = { ...user, email: '' };
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(invalidUser)
-        .expect(400);
-
-      const dbUsers = await User.find({ email: invalidUser.email }).toArray();
-      expect(response.status).toBe(400);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe('email is required');
-      expect(response.body.name).toBe('ValidationError');
-      expect(response.body.path).toBe('email');
-      expect(response.body.type).toBe('required');
-      expect(response.statusText).toBe('Bad Request');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(invalidUser),
+        });
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: invalidUser.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe('email is required');
+        expect(responseBody.name).toBe('ValidationError');
+        expect(responseBody.path).toBe('email');
+        expect(responseBody.type).toBe('required');
+      });
     });
 
     it('should throw invalid email error', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
-      const invalidUser = { ...user };
-      invalidUser.email = 'invalidemail';
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
+        const invalidUser = { ...user, email: 'invalidemail' };
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(invalidUser)
-        .expect(400);
-
-      const dbUsers = await User.find({ email: invalidUser.email }).toArray();
-      expect(response.status).toBe(400);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe('email must be a valid email');
-      expect(response.body.name).toBe('ValidationError');
-      expect(response.body.path).toBe('email');
-      expect(response.body.type).toBe('email');
-      expect(response.statusText).toBe('Bad Request');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(invalidUser),
+        });
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: invalidUser.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe('email must be a valid email');
+        expect(responseBody.name).toBe('ValidationError');
+        expect(responseBody.path).toBe('email');
+        expect(responseBody.type).toBe('email');
+      });
     });
 
     it('should throw missing password error', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
-      const invalidUser = { ...user };
-      invalidUser.password = '';
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
+        const invalidUser = { ...user, password: '' };
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(invalidUser)
-        .expect(400);
-
-      const dbUsers = await User.find({ email: invalidUser.email }).toArray();
-      expect(response.status).toBe(400);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe('password is a required field');
-      expect(response.body.name).toBe('ValidationError');
-      expect(response.body.path).toBe('password');
-      expect(response.body.type).toBe('required');
-      expect(response.statusText).toBe('Bad Request');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(invalidUser),
+        });
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: invalidUser.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe('password is a required field');
+        expect(responseBody.name).toBe('ValidationError');
+        expect(responseBody.path).toBe('password');
+        expect(responseBody.type).toBe('required');
+      });
     });
 
     it('should throw max password error', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
-      const invalidUser = { ...user };
-      invalidUser.password =
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
+        const invalidUser = { ...user };
+        invalidUser.password =
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry' +
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(invalidUser)
-        .expect(400);
-
-      const dbUsers = await User.find({ email: invalidUser.email }).toArray();
-      expect(response.status).toBe(400);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe(
-        'password must be at most 255 characters',
-      );
-      expect(response.body.name).toBe('ValidationError');
-      expect(response.body.path).toBe('password');
-      expect(response.body.type).toBe('max');
-      expect(response.statusText).toBe('Bad Request');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(invalidUser),
+        });
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: invalidUser.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe(
+          'password must be at most 255 characters',
+        );
+        expect(responseBody.name).toBe('ValidationError');
+        expect(responseBody.path).toBe('password');
+        expect(responseBody.type).toBe('max');
+      });
     });
 
     it('should throw invalid password error', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
-      const invalidUser = { ...user };
-      invalidUser.password = '1';
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
+        const invalidUser = { ...user, password: '1' };
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(invalidUser)
-        .expect(400);
-
-      const dbUsers = await User.find({ email: invalidUser.email }).toArray();
-      expect(response.status).toBe(400);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe(
-        'password must be at least 6 characters',
-      );
-      expect(response.body.name).toBe('ValidationError');
-      expect(response.body.path).toBe('password');
-      expect(response.body.type).toBe('min');
-      expect(response.statusText).toBe('Bad Request');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(invalidUser),
+        });
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: invalidUser.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe(
+          'password must be at least 6 characters',
+        );
+        expect(responseBody.name).toBe('ValidationError');
+        expect(responseBody.path).toBe('password');
+        expect(responseBody.type).toBe('min');
+      });
     });
 
     it('should throw invalid role error', async () => {
-      const userId = await createUser(admin);
-      const token = await generateAccessToken(userId);
-      const invalidUser = { ...user };
-      invalidUser.role = <Role.USER> '1';
+      await withTestServer(async (port) => {
+        const userId = await createUser(admin);
+        const token = await generateAccessToken(userId);
+        // Change the role to an invalid value.
+        const invalidUser = { ...user, role: '1' as Role };
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(invalidUser)
-        .expect(400);
-
-      const dbUsers = await User.find({ email: invalidUser.email }).toArray();
-      expect(response.status).toBe(400);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe(
-        `role must be one of the following values: ${ROLES_RANK.join(', ')}`,
-      );
-      expect(response.body.name).toBe('ValidationError');
-      expect(response.body.path).toBe('role');
-      expect(response.body.type).toBe('oneOf');
-      expect(response.statusText).toBe('Bad Request');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(invalidUser),
+        });
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: invalidUser.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe(
+          `role must be one of the following values: ${ROLES_RANK.join(', ')}`,
+        );
+        expect(responseBody.name).toBe('ValidationError');
+        expect(responseBody.path).toBe('role');
+        expect(responseBody.type).toBe('oneOf');
+      });
     });
 
     it('should not create user if no admin rights', async () => {
-      const userId = await createUser(user);
-      const token = await generateAccessToken(userId);
+      await withTestServer(async (port) => {
+        // Create a non-admin user and generate a token.
+        const userId = await createUser(user);
+        const token = await generateAccessToken(userId);
 
-      const request = await superoak(app);
-      const response = await request.post('/api/users')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(user2)
-        .expect(403);
-
-      const dbUsers = await User.find({ email: user2.email }).toArray();
-      expect(response.status).toBe(403);
-      expect(dbUsers.length).toBe(0);
-      expect(response.body.message).toBe('Insufficient rights');
-      expect(response.body.name).toBe('Forbidden');
-      expect(response.body.path).toBe('access_token');
-      expect(response.body.type).toBe('Forbidden');
-      expect(response.statusText).toBe('Forbidden');
+        const response = await fetch(`http://localhost:${port}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(user2),
+        });
+        expect(response.status).toBe(403);
+        const responseBody = await response.json();
+        const dbUsers = await User.find({ email: user2.email }).toArray();
+        expect(dbUsers.length).toBe(0);
+        expect(responseBody.message).toBe('Insufficient rights');
+        expect(responseBody.name).toBe('Forbidden');
+        expect(responseBody.path).toBe('access_token');
+        expect(responseBody.type).toBe('Forbidden');
+      });
     });
   });
 });

@@ -17,7 +17,7 @@
  *
  * @exports AuthController - This class is exported for use in other parts of the application.
  */
-import type { RouterContext } from '../deps.ts';
+import type { RouterContext } from 'jsr:@oak/oak';
 import log from '../middlewares/logger.middleware.ts';
 import AuthService from '../services/auth.service.ts';
 

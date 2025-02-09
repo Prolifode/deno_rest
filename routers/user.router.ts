@@ -1,4 +1,4 @@
-import { Router } from '../deps.ts';
+import { Router } from 'jsr:@oak/oak';
 import UserController from '../controllers/user.controller.ts';
 import { auth } from '../middlewares/auth.middleware.ts';
 import { validate } from '../middlewares/validate.middleware.ts';

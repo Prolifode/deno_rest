@@ -31,8 +31,8 @@
  * @exports UserController - This class is exported for use in other parts of the application.
  */
 import { Role } from '../config/roles.ts';
-import type { RouterContext } from '../deps.ts';
-import { Status } from '../deps.ts';
+import type { RouterContext } from 'jsr:@oak/oak';
+import { Status } from 'jsr:@oak/oak';
 import log from '../middlewares/logger.middleware.ts';
 import UserService from '../services/user.service.ts';
 
@@ -66,7 +66,8 @@ class UserController {
   }
 
   /**
-   * Get single user function
+   * Get all users function
+   * @param params
    * @param response
    * @returns Promise<void>
    */
@@ -74,7 +75,7 @@ class UserController {
     { response }: RouterContext<string>,
   ): Promise<void> {
     log.debug('Getting users list');
-    response.body = await UserService.getUsers();
+    response.body = JSON.stringify(await UserService.getUsers());
   }
 
   /**
@@ -89,8 +90,7 @@ class UserController {
   }
 
   /**
-   * Get all users function
-   * @param params
+   * Get single user function
    * @param response
    * @returns Promise<void>
    */
@@ -144,7 +144,8 @@ class UserController {
       response.status = Status.NoContent;
     } catch (e) {
       response.body = (e as Error).message;
-      response.status = (e as { status: number }).status || Status.InternalServerError;
+      response.status = (e as { status: number }).status ||
+        Status.InternalServerError;
     }
   }
 }

@@ -1,5 +1,6 @@
 import config from '../config/config.ts';
-import { Bson, Status } from '../deps.ts';
+import { ObjectId } from 'jsr:@db/mongo';
+import { Status } from 'jsr:@oak/oak';
 import JwtHelper from '../helpers/jwt.helper.ts';
 import { throwError } from '../middlewares/errorHandler.middleware.ts';
 import { Token, TokenSchema } from '../models/token.model.ts';
@@ -14,7 +15,7 @@ class TokenService {
    */
   private static saveTokenService(
     options: TokenSchema,
-  ): Promise<string | Bson.ObjectId> {
+  ): Promise<string | ObjectId> {
     const createdAt = new Date();
     const { token, user, expires, type, blacklisted } = options;
     return Token.insertOne(
@@ -135,7 +136,7 @@ class TokenService {
       });
     }
     const deleteCount: number = await Token.deleteOne(
-      { _id: new Bson.ObjectId(id).toString() },
+      { _id: new ObjectId(id) },
     );
     if (!deleteCount) {
       return throwError({

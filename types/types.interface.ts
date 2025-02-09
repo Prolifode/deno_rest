@@ -1,4 +1,4 @@
-import { Bson } from '../deps.ts';
+import { ObjectId } from 'jsr:@db/mongo';
 import { Role } from '../config/roles.ts';
 
 export interface TokenStructure {
@@ -42,7 +42,7 @@ export interface UpdateUserStructure {
 export interface UpdatedStructure {
   matchedCount: number;
   modifiedCount: number;
-  upsertedId: typeof Bson.ObjectId | null;
+  upsertedId: ObjectId | null;
 }
 
 export interface Err {

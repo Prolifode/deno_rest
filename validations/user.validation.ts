@@ -1,4 +1,4 @@
-import { yup } from '../deps.ts';
+import * as yup from 'npm:yup';
 import { Role, ROLES_RANK } from '../config/roles.ts';
 
 export const createUserValidation = {

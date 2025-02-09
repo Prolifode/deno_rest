@@ -1,8 +1,9 @@
 import db from '../db/db.ts';
-import type { CreateIndexOptions } from '../deps.ts';
+import { ObjectId } from 'jsr:@db/mongo';
+import type { CreateIndexOptions } from 'jsr:@db/mongo';
 
 export interface UserSchema {
-  _id: string;
+  _id: ObjectId;
   name: string;
   email: string;
   password: string;

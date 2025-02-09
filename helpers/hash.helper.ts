@@ -1,4 +1,4 @@
-import { compare, genSalt, hash } from '../deps.ts';
+import { compare, genSalt, hash } from 'jsr:@da/bcrypt';
 
 class HashHelper {
   /**

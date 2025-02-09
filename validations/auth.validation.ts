@@ -1,4 +1,4 @@
-import { yup } from '../deps.ts';
+import * as yup from 'npm:yup';
 
 export const loginValidation = {
   body: yup.object({

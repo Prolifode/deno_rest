@@ -1,4 +1,4 @@
-import { Status } from '../deps.ts';
+import { Status } from 'jsr:@oak/oak';
 import HashHelper from '../helpers/hash.helper.ts';
 import { throwError } from '../middlewares/errorHandler.middleware.ts';
 import type { TokenSchema } from '../models/token.model.ts';

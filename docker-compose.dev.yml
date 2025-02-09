@@ -5,4 +5,4 @@ services:
     container_name: deno-rest-dev
     environment:
       ENV: development
-    command: denon start --lock=deno.lock
+    command: deno run start

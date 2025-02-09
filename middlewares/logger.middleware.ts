@@ -1,23 +1,24 @@
-import { getLogger, handlers, setup } from '../deps.ts';
+import type { Logger, LogRecord } from '@std/log';
+import { ConsoleHandler, getLogger, setup } from '@std/log';
 import configs from '../config/config.ts';
 
 const { env } = configs;
 
-await setup({
+setup({
   handlers: {
-    functionFmt: new handlers.ConsoleHandler('DEBUG', {
-      formatter: (logRecord) => {
-        const time = new Date().toISOString();
-        let msg = `${time} [${logRecord.level}] ${logRecord.msg}`;
+    functionFmt: new ConsoleHandler('DEBUG', {
+      formatter: (logRecord: LogRecord) => {
+        const time: string = new Date().toISOString();
+        let msg: string = `${time} [${logRecord.level}] ${logRecord.msg}`;
 
         logRecord.args.forEach((arg, index) => {
           msg += `, arg${index}: ${arg}`;
         });
         return msg;
       },
+      useColors: false,
     }),
   },
-
   loggers: {
     default: {
       level: 'DEBUG',
@@ -30,7 +31,7 @@ await setup({
   },
 });
 
-let loggerMiddleware = getLogger();
+let loggerMiddleware: Logger = getLogger();
 
 if (env === 'test') {
   loggerMiddleware = getLogger('tests');

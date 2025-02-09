@@ -1,6 +1,6 @@
 import { clearTimeout, setTimeout } from 'node:timers';
 import configs from '../config/config.ts';
-import { MongoClient } from '../deps.ts';
+import { MongoClient } from 'jsr:@db/mongo';
 import log from '../middlewares/logger.middleware.ts';
 import Seed from '../seed.ts';
 

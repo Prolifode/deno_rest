@@ -1,7 +1,8 @@
 import db from '../db/db.ts';
+import { ObjectId } from 'jsr:@db/mongo';
 
 export interface TokenSchema {
-  _id?: string;
+  _id?: ObjectId;
   token: string;
   user: string;
   type: string;

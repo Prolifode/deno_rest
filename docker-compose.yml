@@ -14,19 +14,19 @@ services:
       - network
     logging:
       options:
-        max-size: "5k"
+        max-size: '5k'
 
   mongo:
     image: mongo:latest
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "echo 'db.runCommand({ping: 1}).ok' | mongo --quiet"]
+      test: ['CMD-SHELL', "echo 'db.runCommand({ping: 1}).ok' | mongo --quiet"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
     ports:
-      - "27017:27017"
+      - '27017:27017'
     container_name: 'mongo_db_server'
     volumes:
       - mongo_data:/data/db
@@ -34,7 +34,7 @@ services:
       - network
     logging:
       options:
-        max-size: "5k"
+        max-size: '5k'
 
 volumes:
   mongo_data:

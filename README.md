@@ -36,8 +36,6 @@ Deno's http server, and deno_mongo is a MongoDB driver for Deno.
   application.
 - **Password hashing with BCrypt:** Securely store user passwords with BCrypt
   hashing.
-- **Denon Integration:** Use Denon, a utility like nodemon for Deno, to
-  automatically restart the server on file changes.
 - **Integration tests:** Test your application with our pre-written integration
   tests.
 - **Docker and CircleCI integration:** Containerize your application with Docker
@@ -45,14 +43,14 @@ Deno's http server, and deno_mongo is a MongoDB driver for Deno.
 
 ## Libraries Utilized
 
-- [Oak](https://deno.land/x/oak) - Middleware framework for Deno's net server
-- [deno_mongo](https://deno.land/x/mongo) - MongoDB driver for Deno
-- [cors](https://deno.land/x/cors) - CORS middleware for Deno
-- [djwt](https://deno.land/x/djwt) - JSON Web Tokens in Deno, based on JWT and
-  JWS specifications
-- [yup](https://deno.land/x/yup) - Schema builder for value parsing and
-  validation
-- [bcrypt](https://deno.land/x/bcrypt) - OpenBSD Blowfish password hashing
+- [Oak](https://jsr.io/@oak/oak) - Middleware framework for Deno's net server
+- [deno_mongo](https://jsr.io/@db/mongo) - MongoDB driver for Deno
+- [cors](https://jsr.io/@tajpouria/cors) - CORS middleware for Deno
+- [djwt](https://jsr.io/@zaubrik/djwt) - JSON Web Tokens in Deno, based on JWT
+  and JWS specifications
+- [yup](https://www.npmjs.com/package/yup) - Schema builder for value parsing
+  and validation
+- [bcrypt](https://jsr.io/@da/bcrypt) - OpenBSD Blowfish password hashing
   algorithm
 
 ## Getting Started
@@ -71,21 +69,14 @@ based on your needs. For example, create a `.env.development` file under the
 create a `.env.test` file under the `.environments` directory. Then, add the
 necessary variables.
 
-### Install Denon
-
-Follow this Denon Installation Guide: https://deno.land/x/denon
-
 ### Database Seeding
 
 We use a seeding script to populate the database with initial data. Run the
 following command to execute the seeding script:
 
 ```bash
-denon run --allow-read --allow-write --allow-net --unstable seed.ts
+deno run seed
 ```
-
-Ensure that you have the necessary permissions by including the `--allow-read`
-and `--allow-write` flags.
 
 ### Running the Project
 
@@ -93,10 +84,22 @@ After setting up everything, you can run the project using the following
 command:
 
 ```bash
-denon start
+deno start
+```
+
+#### with file watch:
+
+```bash
+deno start:watch
 ```
 
 The server will start and listen for incoming requests.
+
+### Tests
+
+```bash
+deno test
+```
 
 ## User Roles and Permissions
 

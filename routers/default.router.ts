@@ -1,4 +1,4 @@
-import { Context, Router, send } from '../deps.ts';
+import { Context, Router, send } from 'jsr:@oak/oak';
 import configs from '../config/config.ts';
 
 const router = new Router();
