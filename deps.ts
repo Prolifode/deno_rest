@@ -9,7 +9,6 @@ export { compare, genSalt, hash } from 'bcrypt/mod.ts';
 export {
   Application,
   Context,
-  helpers,
   isHttpError,
   Router,
   send,
