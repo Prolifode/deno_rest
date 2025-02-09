@@ -27,7 +27,9 @@ const validateParams = async (
     try {
       await schema.validate(payload, { stripUnknown: true, abortEarly: true });
     } catch (validationErrors) {
-      throw ({ ...validationErrors, status: Status.BadRequest });
+      throw (typeof validationErrors === 'object' && validationErrors !== null
+        ? { ...validationErrors, status: Status.BadRequest }
+        : { status: Status.BadRequest, message: String(validationErrors) });
     }
   } else if (payload && Object.keys(payload).length) {
     throwError({

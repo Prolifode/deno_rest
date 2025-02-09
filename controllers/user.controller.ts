@@ -143,8 +143,8 @@ class UserController {
       );
       response.status = Status.NoContent;
     } catch (e) {
-      response.body = e;
-      response.status = e.status;
+      response.body = (e as Error).message;
+      response.status = (e as { status: number }).status || Status.InternalServerError;
     }
   }
 }
