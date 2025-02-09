@@ -21,7 +21,6 @@ const indexOptions: CreateIndexOptions = {
       email: 'text',
     },
     name: 'emailUniqueKey',
-    unique: true,
   }],
 };
 

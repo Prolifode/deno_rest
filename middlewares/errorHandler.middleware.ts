@@ -24,7 +24,7 @@ export const errorHandler = async (
   try {
     await next();
   } catch (err) {
-    const error: ICustomError = err;
+    const error: ICustomError = err as ICustomError;
     const status: number = error.status || error.statusCode ||
       Status.InternalServerError;
     const message: string = error.message || 'An error occurred';

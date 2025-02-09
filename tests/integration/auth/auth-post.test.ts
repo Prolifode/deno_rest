@@ -35,7 +35,7 @@ describe('Auth endpoints POST', () => {
         .send({ email, password })
         .expect(200);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(userId) },
+        { _id: new Bson.ObjectId(userId).toString() },
       );
       expect(typeof response.body).toBe('object');
       expect(response.status).toBe(200);

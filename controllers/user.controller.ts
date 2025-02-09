@@ -46,14 +46,14 @@ class UserController {
   public static async create(
     { request, response }: RouterContext<string>,
   ): Promise<void> {
-    const body = request.body();
+    const body = request.body;
     const {
       name,
       email,
       password,
       role,
       isDisabled,
-    } = await body.value;
+    } = await body.json();
     log.debug('Creating user');
     response.body = await UserService.createUser({
       name,
@@ -114,8 +114,8 @@ class UserController {
     { params, request, response, state }: RouterContext<string>,
   ): Promise<void | Error> {
     const { id } = params;
-    const body = request.body();
-    const { name, email, role, isDisabled } = await body.value;
+    const body = request.body;
+    const { name, email, role, isDisabled } = await body.json();
     log.debug('Updating user');
     await UserService.updateUser(id as string, state, {
       name,
@@ -143,8 +143,8 @@ class UserController {
       );
       response.status = Status.NoContent;
     } catch (e) {
-      response.body = e;
-      response.status = e.status;
+      response.body = (e as Error).message;
+      response.status = (e as { status: number }).status || Status.InternalServerError;
     }
   }
 }

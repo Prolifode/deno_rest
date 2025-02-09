@@ -38,7 +38,7 @@ describe('Users endpoints POST', () => {
         .send(user)
         .expect(201);
       const dbUser = await User.findOne(
-        { _id: new Bson.ObjectId(response.body) },
+        { _id: new Bson.ObjectId(response.body).toString() },
       );
       expect(typeof response.body).toBe('string');
       expect(response.status).toBe(201);

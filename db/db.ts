@@ -1,3 +1,4 @@
+import { clearTimeout, setTimeout } from 'node:timers';
 import configs from '../config/config.ts';
 import { MongoClient } from '../deps.ts';
 import log from '../middlewares/logger.middleware.ts';
@@ -10,7 +11,6 @@ const { dbName, mongoUrl, seed } = configs;
  */
 class Database {
   public client: MongoClient;
-  private seeder: Seed = new Seed();
 
   /**
    * Constructor function for Database
@@ -34,7 +34,7 @@ class Database {
     log.info('Database connected!');
     if (seed) {
       const ev = setTimeout(async () => {
-        await this.seeder.seedCollection();
+        await new Seed().seedCollection();
         log.info('All Seed done');
         clearTimeout(ev);
       }, 10);

@@ -99,7 +99,7 @@ class UserService {
    */
   public static async getUser(id: string): Promise<UserStructure | Error> {
     const user: UserSchema | undefined = await User.findOne(
-      { _id: new Bson.ObjectId(id) },
+      { _id: new Bson.ObjectId(id).toString() },
     );
     if (!user) {
       log.error('User not found');
@@ -129,7 +129,7 @@ class UserService {
     options: UpdateUserStructure,
   ): Promise<UpdatedStructure | Error> {
     const user: UserSchema | undefined = await User.findOne(
-      { _id: new Bson.ObjectId(id) },
+      { _id: new Bson.ObjectId(id).toString() },
     );
     if (!user) {
       log.error('User not found');
@@ -194,7 +194,7 @@ class UserService {
       upsertedCount: number;
       matchedCount: number;
       modifiedCount: number;
-    } = await User.updateOne({ _id: new Bson.ObjectId(id) }, {
+    } = await User.updateOne({ _id: new Bson.ObjectId(id).toString() }, {
       $set: {
         name,
         email,
@@ -243,7 +243,7 @@ class UserService {
     let user: UserSchema | undefined;
     try {
       user = await User.findOne(
-        { _id: new Bson.ObjectId(id) },
+        { _id: new Bson.ObjectId(id).toString() },
       );
     } catch (e) {
       log.error(e);
@@ -270,7 +270,7 @@ class UserService {
       });
     }
     const deleteCount: number = await User.deleteOne({
-      _id: new Bson.ObjectId(id),
+      _id: new Bson.ObjectId(id).toString(),
     });
     if (deleteCount) {
       const { name, email, role, isDisabled, createdAt, docVersion } = user;
