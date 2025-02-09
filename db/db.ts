@@ -1,7 +1,9 @@
+import { clearTimeout, setTimeout } from 'node:timers';
 import configs from '../config/config.ts';
 import { MongoClient } from '../deps.ts';
 import log from '../middlewares/logger.middleware.ts';
 import Seed from '../seed.ts';
+import { consoleSize } from 'https://deno.land/std@0.125.0/_deno_unstable.ts';
 
 const { dbName, mongoUrl, seed } = configs;
 
@@ -10,7 +12,7 @@ const { dbName, mongoUrl, seed } = configs;
  */
 class Database {
   public client: MongoClient;
-  private seeder: Seed = new Seed();
+  private seeder: Seed | null = null;
 
   /**
    * Constructor function for Database
@@ -21,6 +23,7 @@ class Database {
     this.dbName = dbName;
     this.url = url;
     this.client = {} as MongoClient;
+
   }
 
   /**
@@ -32,13 +35,13 @@ class Database {
     await client.connect(this.url);
     this.client = client;
     log.info('Database connected!');
-    if (seed) {
-      const ev = setTimeout(async () => {
-        await this.seeder.seedCollection();
-        log.info('All Seed done');
-        clearTimeout(ev);
-      }, 10);
-    }
+
+    const ev = setTimeout(async () => {
+      await new Seed().seedCollection();
+      log.info('All Seed done');
+      clearTimeout(ev);
+    }, 10);
+
   }
 
   /**
